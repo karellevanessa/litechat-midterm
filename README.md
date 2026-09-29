@@ -1,6 +1,8 @@
-# Litechat clone (ITENT 45 midterm)
+# Petal: a Litechat clone (ITENT 45 midterm)
 
 A replica of the core of [Litechat](https://litechat.ai): **metered, pay-as-you-go access to LLMs from several providers**, for regular users who do not want a subscription.
+
+The app is branded **Petal** (pink theme) to set it apart from the original.
 
 - Brief: [`doc/canonical/midterm_prompt.md`](doc/canonical/midterm_prompt.md)
 - How the project was run (study → plan → execute): [`AGENTS.md`](AGENTS.md), [`doc/study/`](doc/study/), [`doc/plan/`](doc/plan/), [`doc/wiki/footguns/`](doc/wiki/footguns/)

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static billing_tags %}
-{% block title %}{{ current }} · LiteChat{% endblock %}
+{% block title %}{{ current }} · Petal{% endblock %}
 {% block sidebar_extra %}{% include "chat/sidebar.html" %}{% endblock %}
 {% block main %}
 <div class="chat" id="chat" data-send-url="{% url 'chat:send' current.pk %}">
