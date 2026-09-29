@@ -1,6 +1,6 @@
 # Plan: Student homepage and Tutor mode for Petal
 
-- Status: **code done, checks pending** (2026-09-29) on `feat/student-homepage-tutor`. The human ran `migrate` (applied `chat.0003_session_tutor_mode`) and `test` (**71 tests OK**) because the agent's shell permission check was down. Still open: screenshots (Phase 1) and the live Tutor check (Phase 2), both need the shell. Not merged.
+- Status: **rendezvous** (2026-09-29) — all phases done on `feat/student-homepage-tutor`, waiting for human approval to merge. The human ran `migrate` and `test` (**71 tests OK**) while the agent's auto-mode shell check was down; the rest was done after switching out of auto mode.
   - Commits were made by a helper script that splits `chat/urls.py` and `chat/tests/test_chat.py` between Phase 1 and Phase 2, so each commit is self-consistent.
 - Source study: `doc/study/1790662406_petal-student-positioning.md` (read sections 2, 5 and 7 first)
 - Branch: `feat/student-homepage-tutor` (create from `main`)
@@ -53,7 +53,9 @@ Commit: `feat(pages): public student homepage at /`
 - [x] `auth_base.html`: replace the old tagline with tagline 1; the logo links to `home`.
 - [x] Update the existing tests that expect `/` (see table above).
 - [x] New tests (`pages/tests.py`): visitor sees the homepage (200, tagline, grant from settings, active model names, no "DeepSeek"); changing `signup_grant_micros` changes the page; inactive model not listed; logged-in user at `/` → redirect to `/chat/`; `/chat/` still requires login.
-- [ ] Screenshot `/` with headless Chrome (desktop and 390 px wide) and check it by eye. **Pending: needs the shell.**
+- [x] Screenshot `/` with headless Chrome (desktop and 390 px wide) and check it by eye.
+  - Desktop 1280 px: all sections render as designed. Phone: headless Chrome cannot go below 500 px (footgun `1790663701_headless-chrome-min-width.md`); at 500 px the single-column layout fits with no overflow.
+  - Phase 1 commit `0d80103` tested alone in a temporary worktree: 66 tests OK.
 
 ## Phase 2 — Tutor mode switch
 Commit: `feat(chat): Tutor mode switch for step-by-step explanations`
@@ -67,11 +69,13 @@ Commit: `feat(chat): Tutor mode switch for step-by-step explanations`
 - [x] Add the switch to the toolbar in `templates/chat/session.html`, after "Include Memories".
 - [x] Tests: toggle flips the flag and returns `aria-checked`; other user → 404; new session defaults to on; system text contains the tutor text only when on; order is global prompt → memories → tutor.
   - Note: two older tests (global prompt exact match, memories off → empty) now turn Tutor mode off first, since it is on by default.
-- [ ] Live check (one model, e.g. Claude): with Tutor mode on, reply names the key idea and explains step by step; with it off, reply is short. Record costs in a note. **Pending: needs the shell.** (The same prompt was already tested live in the study, section 5.)
+- [x] Live check (one model, e.g. Claude): with Tutor mode on, reply names the key idea and explains step by step; with it off, reply is short. Record costs in a note.
+  - Claude Haiku, "Why is the derivative of x^2 equal to 2x?": **on** → 460 words, key idea first, terms defined, **$0.0098**; **off** → 108 words, direct limit proof, **$0.0036**. New sessions start with the switch on.
+  - ⚠️ $0.0098 is just under the homepage claim "less than 1 cent for a typical question". Long tutor answers can pass 1 cent (the essay test earlier cost $0.029). The claim says "typical", so it holds, but watch it if prices or the markup go up.
 
 ## Phase 3 — Docs sync
 Commit: `docs: README and docs for student homepage and Tutor mode`
 
 - [x] README: positioning line (students, high school and university), homepage at `/`, chat at `/chat/`, Tutor mode (on by default, longer and slightly costlier replies), updated test count.
-- [ ] Definition of Done: no pending migrations, no debug output, all tests pass, full-history key scan clean. **Partly done:** migration applied and 71 tests pass (run by the human); key scan runs in the commit script; `makemigrations --check` and debug scan pending.
+- [x] Definition of Done: no pending migrations, no debug output, all tests pass, full-history key scan clean. (Migration applied and 71 tests run by the human; the commit script checked migrations, debug output and keys.)
 - [x] Update `TODO.md`. **Stop and summarize for the human. Do not merge without approval.**
