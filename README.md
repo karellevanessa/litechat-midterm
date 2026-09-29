@@ -4,6 +4,7 @@ A replica of the core of [Litechat](https://litechat.ai): **metered, pay-as-you-
 
 The app is branded **Petal** (pink theme) and positioned as a **study helper for high-school and university students**: "Understand your coursework, one question at a time. Pay per question, not per month."
 
+- **Live:** https://petal-karelle.vercel.app (Vercel + Neon Postgres)
 - Brief: [`doc/canonical/midterm_prompt.md`](doc/canonical/midterm_prompt.md)
 - How the project was run (study → plan → execute): [`AGENTS.md`](AGENTS.md), [`doc/study/`](doc/study/), [`doc/plan/`](doc/plan/), [`doc/wiki/footguns/`](doc/wiki/footguns/)
 
@@ -64,6 +65,19 @@ cp .env.example .env          # then paste the three proxy keys into .env
 - **Remove credit / fix a mistake:** Admin → Ledger entries → Add → negative amount. Entries cannot be edited or deleted.
 - **Change prices:** Admin → AI models (prices are provider cost in micro-dollars per 1M tokens; 1,000,000 = $1).
 - **Change markup or signup grant:** Admin → Pricing settings.
+
+## Deployment (Vercel)
+
+Vercel builds every push; `main` goes to production. See [`doc/wiki/footguns/1790665108_vercel-django-deploy.md`](doc/wiki/footguns/1790665108_vercel-django-deploy.md) for the pitfalls.
+
+- **Env vars on Vercel:** `SECRET_KEY`, `DEBUG=0`, the three `*_PROXY_KEY`s, `ALLOWED_HOSTS`, `CSRF_TRUSTED_ORIGINS`, and `DATABASE_URL` (added by the Neon integration). Settings refuse to start on Vercel without `DATABASE_URL`.
+- **Static files:** served by WhiteNoise (Vercel skips `collectstatic`).
+- **Migrations are not run by Vercel.** After adding a migration, run it against Neon before merging to `main`:
+  ```bash
+  # .env.neon (git-ignored) holds one line: DATABASE_URL=<Neon unpooled URL>
+  DATABASE_URL="$(grep '^DATABASE_URL=' .env.neon | cut -d= -f2-)" .venv/bin/python manage.py migrate
+  ```
+- **Cloud admin:** create with the same `DATABASE_URL=... manage.py createsuperuser`.
 
 ## Tests
 
