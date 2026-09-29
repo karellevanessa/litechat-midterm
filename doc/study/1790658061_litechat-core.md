@@ -12,7 +12,9 @@
 | Login | Email and password only. No social login. |
 | Billing accounts | One personal account per user. |
 | Credits | Free starting grant for each new user, plus admin top-ups. |
-| Markup | 0.5 markup. Interpreted as **+50 %**: price = provider cost × 1.5. See open question Q1. |
+| Markup | **+50 %**: price = provider cost × 1.5. Default only; the admin can change it. |
+| Starting grant | **$2.00** for each new user. |
+| Model catalog | Only the 3 models that the proxy serves. No "unavailable" cards. |
 | Prices and top-ups | The agent sets default prices. The admin can change prices and top up balances. |
 | Scope | See section 3. SimGen and "Ask" are out of scope. |
 | Repo | Public on GitHub. API keys never go in the repo. |
@@ -164,8 +166,8 @@ The Django admin at `/admin/` gives:
 | Transcripts contain keys | Redact keys before submitting transcripts, or tell Joe. |
 | Streaming under the dev server | Django's dev server streams `StreamingHttpResponse`. Verify early in the plan. |
 
-## 8. Open questions
+## 8. Resolved questions
 
-- **Q1. Markup.** I read "0.5 markup" as **+50 %** (user pays provider cost × 1.5). The other reading is **× 0.5** (user pays half the provider cost, so the platform loses money). Which one do you mean? The admin can change it, so this only sets the default.
-- **Q2. Starting grant.** Is **$2.00** correct?
-- **Q3. Real models vs. our models.** The real app lists about 10 models. Our keys give 3. Plan: show only the 3 that work. Do you want the other models shown as "unavailable" cards to look closer to the real app?
+- **Q1. Markup → +50 %.** The human asked for a recommendation. Reasons: the brief describes a platform that must survive on per-use charges, so it must charge more than the provider cost. × 0.5 loses money on every message. +50 % also covers overhead (hosting, payment fees, the ~200 hidden proxy tokens). A short message still costs a fraction of a cent, far below a $20/month subscription, so the value for regular users stays clear.
+- **Q2. Starting grant → $2.00.** Reasons: it matches the real app, it lets a new user try all 3 models many times, and it costs the platform about $1.33 at provider cost. Known gap: with no email verification, one person can make many accounts to get many grants. Accepted for this project.
+- **Q3. Models → only the 3 that work.**
