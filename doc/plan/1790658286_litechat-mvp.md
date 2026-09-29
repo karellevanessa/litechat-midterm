@@ -114,10 +114,11 @@ Commit: `feat(chat): sessions and metered streaming chat`
 ## Phase 7 — Profile and usage
 Commit: `feat(accounts): profile page with billing account and usage history`
 
-- [ ] Profile: display name, user id, member since.
-- [ ] Billing Accounts card: name, ACTIVE badge, AVAILABLE CREDIT.
-- [ ] Usage history: last 50 ledger entries (date, kind, model, tokens, amount).
-- [ ] Tests: page shows correct balance; only own entries.
+- [x] Profile: display name, user id, member since.
+- [x] Billing Accounts card: name, ACTIVE badge, AVAILABLE CREDIT.
+- [x] Usage history: last 50 ledger entries (date, kind, model, tokens, amount).
+- [x] Tests: page shows correct balance; only own entries.
+  - Note: profile is at `/accounts/profile/`; the sidebar link now points there. Email is also shown (the real app shows a UUID username instead).
 
 ## Phase 8 — Rendezvous prep (must)
 Commit: `docs: README run guide and doc sync for MVP`

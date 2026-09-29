@@ -25,7 +25,7 @@
       <a class="nav-item {% if request.resolver_match.app_name == 'chat' %}active{% endif %}" href="{% url 'chat:index' %}">&#128172; Chat</a>
       <hr>
       <div class="nav-label">Account</div>
-      <a class="nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="#">&#128100; My Profile</a>
+      <a class="nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{% url 'profile' %}">&#128100; My Profile</a>
       {% if user.is_staff %}<a class="nav-item" href="{% url 'admin:index' %}">&#9881; Admin</a>{% endif %}
     </nav>
     <div class="credit-chip" id="credit-chip">

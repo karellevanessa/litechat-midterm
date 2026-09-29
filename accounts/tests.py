@@ -49,3 +49,33 @@ class LoginTests(TestCase):
         self.client.login(username="ana@example.com", password="a-strong-pass-42")
         self.client.post("/accounts/logout/")
         self.assertRedirects(self.client.get("/"), "/accounts/login/?next=/")
+
+
+class ProfileTests(TestCase):
+    def setUp(self):
+        self.client.post("/accounts/signup/", SIGNUP)
+        self.user = User.objects.get()
+
+    def test_profile_shows_identity_and_balance(self):
+        from billing.models import LedgerEntry as Entry
+
+        Entry.objects.create(account=self.user.billing_accounts.get(), amount_micros=-1065, kind=Entry.Kind.CHARGE)
+        response = self.client.get("/accounts/profile/")
+        self.assertContains(response, "Karelle")
+        self.assertContains(response, "[Personal] Karelle")
+        self.assertContains(response, "$1.99")
+        self.assertContains(response, "Signup grant")
+        self.assertContains(response, "-$0.0011")
+
+    def test_profile_shows_only_own_entries(self):
+        other = User.objects.create_user(email="o@example.com", password="pw-123456")
+        from billing.services import open_personal_account, top_up
+
+        top_up(open_personal_account(other), 7_770_000, created_by=None, note="secret top-up")
+        response = self.client.get("/accounts/profile/")
+        self.assertNotContains(response, "secret top-up")
+        self.assertNotContains(response, "$7.77")
+
+    def test_profile_requires_login(self):
+        self.client.post("/accounts/logout/")
+        self.assertRedirects(self.client.get("/accounts/profile/"), "/accounts/login/?next=/accounts/profile/")
