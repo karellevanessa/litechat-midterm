@@ -1,7 +1,7 @@
 # Study: Petal as a student-friendly platform (homepage + Tutor mode)
 
 - Date: 2026-09-29
-- Status: for human review. Section 1 holds the human's decisions. Section 8 holds open questions.
+- Status: reviewed. All open questions answered (section 8). Plan: `doc/plan/1790662694_student-homepage-tutor.md`.
 - Inputs: the human's answers in the session, the current codebase on `main` (`719706f`), real reply costs from the local database, and a live test of a draft Tutor prompt (section 5).
 - Related: `doc/study/1790658061_litechat-core.md` (core metering), `doc/canonical/midterm_prompt.md` (brief).
 
@@ -14,7 +14,10 @@
 | Scope | A public **homepage** plus a simple **Tutor mode** switch. Nothing else. |
 | Tutor behaviour | Explain step by step. When the student asks for the answer or the full solution, give it, step by step. |
 | "Powered by DeepSeek" | **Do not claim it publicly.** See section 2. |
-| Tagline | The human picks from the options in section 6. |
+| Tagline | Option 1: "Understand your coursework, one question at a time." Pricing line: "Pay per question, not per month." |
+| Tutor mode default | On for new sessions. |
+| Hint first | Accepted: models explain step by step and include the answer. |
+| URLs | `/` = homepage for visitors; chat index moves to `/chat/`. |
 
 ## 2. What we may and may not claim
 
@@ -130,9 +133,9 @@ A good pairing: **tagline 1** as the headline, **tagline 2 (second half)** as th
 
 Subject pickers, file/photo upload of homework, a separate "student" pricing tier, school accounts, and admin-editable tutor text.
 
-## 8. Open questions
+## 8. Resolved questions
 
-- **Q1. Tutor mode default.** Should new sessions start with Tutor mode **on** (fits the student positioning) or **off** (cheaper, faster replies)? Recommendation: **on**, because it is the product's main feature for students.
-- **Q2. Hint first?** The test shows models give the answer at once. Is that acceptable (explain step by step, full answer included), or should the plan try a stricter "hint, then wait" prompt and re-test? Recommendation: **accept** — it matches decision 4 and costs less than extra back-and-forth.
-- **Q3. Tagline.** Which option from section 6? Recommendation: **1**, with "Pay per question, not per month." as the pricing line.
-- **Q4. Homepage URL.** Is it OK that `/` becomes the homepage for visitors and the chat moves to `/chat/` (sessions keep their URLs `/sessions/<id>/`)?
+- **Q1. Tutor mode default → on.**
+- **Q2. Hint first → accept** the current behaviour (step-by-step explanation with the answer). No stricter prompt.
+- **Q3. Tagline → option 1**, with "Pay per question, not per month." as the pricing line.
+- **Q4. Homepage URL → OK.** `/` is the homepage for visitors; the chat index moves to `/chat/`.

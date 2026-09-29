@@ -1,5 +1,5 @@
 # TODO
 
-- Active plan doc: none (last: `doc/plan/1790658286_litechat-mvp.md`, done and merged)
-- Phase: sync docs done; idle
-- Next: human reviews the UI in a browser and exports transcripts (redact the `lp_` keys) for submission.
+- Active plan doc: `doc/plan/1790662694_student-homepage-tutor.md`
+- Phase: plan (waiting for human approval)
+- Next: on approval, "execute plan" from Phase 1 on branch `feat/student-homepage-tutor`.
