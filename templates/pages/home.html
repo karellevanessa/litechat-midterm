@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Petal · Understand your coursework{% endblock %}
+{% block body %}
+<div class="home">
+  <header class="home-nav">
+    <a class="brand" href="{% url 'home' %}">{% include "partials/logo.html" %}<span>Petal</span></a>
+    <nav>
+      <a class="btn" href="{% url 'login' %}">Log in</a>
+      <a class="btn primary" href="{% url 'signup' %}">Sign up</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Understand your coursework, one question at a time.</h1>
+    <p class="lead">Petal is a study helper for high-school and university students. Ask about any class and get clear, step-by-step explanations from top AI models.</p>
+    <div class="hero-actions">
+      <a class="btn primary big" href="{% url 'signup' %}">Sign up — {{ signup_grant }} free credit</a>
+      <a class="btn big" href="{% url 'login' %}">Log in</a>
+    </div>
+    <p class="muted small">No subscription. No card needed to start.</p>
+  </section>
+
+  <section class="home-section">
+    <h2>How it works</h2>
+    <ol class="steps">
+      <li><span class="step-num">1</span><strong>Sign up</strong><span class="muted">Get {{ signup_grant }} of free credit to start.</span></li>
+      <li><span class="step-num">2</span><strong>Ask about any class</strong><span class="muted">Math, science, writing, coding, history and more.</span></li>
+      <li><span class="step-num">3</span><strong>Pay only for what you use</strong><span class="muted">Each reply shows what it cost. Failed messages are free.</span></li>
+    </ol>
+  </section>
+
+  <section class="home-section tutor-card">
+    <h2>Tutor mode</h2>
+    <p>Tutor mode explains step by step, one idea at a time, in plain words. Ask for the full solution and it walks you through every step and why it works. Then it gives you a quick check question.</p>
+    <p class="muted small">Tutor mode is on by default. Turn it off in any chat for short, direct answers.</p>
+  </section>
+
+  <section class="home-section">
+    <h2>Questions students ask</h2>
+    <div class="chips">
+      <a class="chip" href="{% url 'signup' %}"><span>Calculus</span>Why is the derivative of x² equal to 2x?</a>
+      <a class="chip" href="{% url 'signup' %}"><span>Algebra</span>How do I solve 2x + 5 = 17 step by step?</a>
+      <a class="chip" href="{% url 'signup' %}"><span>Chemistry</span>How do I balance H₂ + O₂ → H₂O?</a>
+      <a class="chip" href="{% url 'signup' %}"><span>Physics</span>What does Newton's second law really mean?</a>
+      <a class="chip" href="{% url 'signup' %}"><span>Writing</span>How can I make my thesis statement stronger?</a>
+      <a class="chip" href="{% url 'signup' %}"><span>Programming</span>Why does my Python loop never stop?</a>
+      <a class="chip" href="{% url 'signup' %}"><span>History</span>What were the main causes of World War I?</a>
+      <a class="chip" href="{% url 'signup' %}"><span>Statistics</span>What is the difference between mean and median?</a>
+    </div>
+  </section>
+
+  <section class="home-section pricing">
+    <h2>Pay per question, not per month.</h2>
+    <div class="price-grid">
+      <div class="price-item"><strong>Less than 1¢</strong><span class="muted">for a typical question</span></div>
+      <div class="price-item"><strong>{{ signup_grant }}</strong><span class="muted">free credit to start</span></div>
+      <div class="price-item"><strong>$0</strong><span class="muted">for messages that fail</span></div>
+    </div>
+    {% if models %}
+    <p class="muted">Choose your model: {% for m in models %}<span class="model-pill">{{ m.display_name }}</span>{% endfor %}</p>
+    {% endif %}
+  </section>
+
+  <footer class="home-footer">
+    <p>AI can make mistakes. Check the information it generates.</p>
+    <p class="muted small">© Petal</p>
+  </footer>
+</div>
+{% endblock %}

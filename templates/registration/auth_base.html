@@ -2,8 +2,8 @@
 {% block body %}
 <div class="auth-page">
   <div class="auth-card">
-    <div class="brand">{% include "partials/logo.html" %}<span>Petal</span></div>
-    <p class="muted">Pay-as-you-go access to top AI models. No subscription.</p>
+    <a class="brand" href="{% url 'home' %}">{% include "partials/logo.html" %}<span>Petal</span></a>
+    <p class="muted">Understand your coursework, one question at a time. Pay per question, not per month.</p>
     {% block auth %}{% endblock %}
   </div>
 </div>

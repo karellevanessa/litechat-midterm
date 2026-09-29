@@ -12,14 +12,14 @@ SIGNUP = {"display_name": "Karelle", "email": "Karelle@Example.com", "password1"
 class SignupTests(TestCase):
     def test_signup_creates_user_account_and_two_dollar_grant(self):
         response = self.client.post("/accounts/signup/", SIGNUP)
-        self.assertRedirects(response, "/")
+        self.assertRedirects(response, "/chat/")
         user = User.objects.get()
         self.assertEqual(user.email, "karelle@example.com")
         account = user.billing_accounts.get()
         self.assertEqual(account.name, "[Personal] Karelle")
         self.assertEqual(get_balance(account), 2_000_000)
         self.assertEqual(account.entries.get().kind, LedgerEntry.Kind.GRANT)
-        self.assertContains(self.client.get("/"), "$2.00")
+        self.assertContains(self.client.get("/chat/"), "$2.00")
 
     def test_duplicate_email_is_rejected(self):
         self.client.post("/accounts/signup/", SIGNUP)
@@ -35,7 +35,7 @@ class LoginTests(TestCase):
 
     def test_login_with_email_case_insensitive(self):
         response = self.client.post("/accounts/login/", {"username": "ANA@example.com", "password": "a-strong-pass-42"})
-        self.assertRedirects(response, "/")
+        self.assertRedirects(response, "/chat/")
 
     def test_wrong_password_fails(self):
         response = self.client.post("/accounts/login/", {"username": "ana@example.com", "password": "nope"})
@@ -43,12 +43,12 @@ class LoginTests(TestCase):
         self.assertFalse(response.wsgi_request.user.is_authenticated)
 
     def test_anonymous_is_redirected_to_login(self):
-        self.assertRedirects(self.client.get("/"), "/accounts/login/?next=/")
+        self.assertRedirects(self.client.get("/chat/"), "/accounts/login/?next=/chat/")
 
     def test_logout(self):
         self.client.login(username="ana@example.com", password="a-strong-pass-42")
         self.client.post("/accounts/logout/")
-        self.assertRedirects(self.client.get("/"), "/accounts/login/?next=/")
+        self.assertRedirects(self.client.get("/chat/"), "/accounts/login/?next=/chat/")
 
 
 class ProfileTests(TestCase):

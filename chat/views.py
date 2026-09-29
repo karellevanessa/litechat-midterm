@@ -19,6 +19,7 @@ from billing.services import (
 )
 
 from .models import ChatSession, Message
+from .prompts import TUTOR_PROMPT
 from .providers import Delta, ProviderError, Retry, stream_chat
 
 HISTORY_LIMIT = 20
@@ -133,12 +134,21 @@ def session_toggle_memories(request, pk):
     return render(request, "chat/partials/memory_toggle.html", {"current": session})
 
 
+@login_required
+@require_POST
+def session_toggle_tutor(request, pk):
+    session = get_object_or_404(_sessions(request.user), pk=pk)
+    session.tutor_mode = not session.tutor_mode
+    session.save(update_fields=["tutor_mode"])
+    return render(request, "chat/partials/tutor_toggle.html", {"current": session})
+
+
 def _line(**payload):
     return json.dumps(payload) + "\n"
 
 
-def build_system_prompt(user, include_memories=False):
-    """System text sent with every request, built from the user's profile settings."""
+def build_system_prompt(user, include_memories=False, tutor_mode=False):
+    """System text sent with every request: global prompt, then memories, then Tutor mode."""
     parts = []
     if user.global_system_prompt.strip():
         parts.append(user.global_system_prompt.strip())
@@ -146,6 +156,8 @@ def build_system_prompt(user, include_memories=False):
         memories = [f"- [{m.get_category_display()}] {m.content}" for m in user.memories.all()]
         if memories:
             parts.append("Things the user asked you to remember about them:\n" + "\n".join(memories))
+    if tutor_mode:
+        parts.append(TUTOR_PROMPT)
     return "\n\n".join(parts)
 
 
@@ -180,7 +192,8 @@ def send(request, pk):
     while history and history[0]["role"] != Message.Role.USER:
         history.pop(0)
 
-    stream = _stream_reply(session, account, ai_model, build_system_prompt(request.user, session.include_memories), history)
+    system = build_system_prompt(request.user, session.include_memories, session.tutor_mode)
+    stream = _stream_reply(session, account, ai_model, system, history)
     response = StreamingHttpResponse(stream, content_type="application/x-ndjson")
     response["Cache-Control"] = "no-cache"
     response["X-Accel-Buffering"] = "no"
