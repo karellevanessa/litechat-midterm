@@ -1,4 +1,4 @@
-from billing.services import format_usd, get_balance, personal_account_for
+from billing.services import format_balance, get_balance, personal_account_for
 
 
 def billing(request):
@@ -8,4 +8,4 @@ def billing(request):
     account = personal_account_for(request.user)
     if account is None:
         return {}
-    return {"billing_account": account, "balance_display": format_usd(get_balance(account))}
+    return {"billing_account": account, "balance_display": format_balance(get_balance(account))}

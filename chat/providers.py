@@ -16,7 +16,8 @@ import httpx
 from django.conf import settings
 
 ANTHROPIC_MAX_TOKENS = 4096
-TIMEOUT = httpx.Timeout(120.0, connect=10.0)
+# The shared proxy can take 20 s just to accept a connection; see doc/wiki/footguns/.
+TIMEOUT = httpx.Timeout(120.0, connect=30.0)
 
 
 @dataclass

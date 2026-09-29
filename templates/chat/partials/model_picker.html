@@ -1,0 +1,25 @@
+<dialog id="model-dialog" class="model-dialog">
+  <div class="dialog-head">
+    <h2>Select a Model</h2>
+    <button type="button" class="icon-btn" onclick="this.closest('dialog').close()" aria-label="Close">&#10005;</button>
+  </div>
+  <div class="dialog-body">
+    <div class="nav-label">Billing account</div>
+    <div class="billing-box">{{ billing_account.name }}</div>
+    <p class="muted small">Costs for this session will be charged to the selected account.</p>
+    <hr>
+    {% for provider, models in models_by_provider.items %}
+      <h3 class="provider">{{ provider }}</h3>
+      {% for m in models %}
+        <button type="button" class="model-card {% if current.ai_model_id == m.pk %}selected{% endif %}"
+                hx-post="{% url 'chat:session_set_model' current.pk %}" hx-vals='{"ai_model": "{{ m.pk }}"}'
+                hx-target="#model-btn" hx-swap="outerHTML"
+                onclick="document.querySelectorAll('.model-card').forEach(c => c.classList.remove('selected')); this.classList.add('selected'); this.closest('dialog').close()">
+          <strong>{{ m.display_name }}</strong>
+          <span class="muted">{{ m.description }}</span>
+          <span class="tier">{{ m.get_tier_display }} tier</span>
+        </button>
+      {% endfor %}
+    {% endfor %}
+  </div>
+</dialog>

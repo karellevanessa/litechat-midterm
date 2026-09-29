@@ -93,6 +93,7 @@ class LedgerEntry(models.Model):
     account = models.ForeignKey(BillingAccount, on_delete=models.CASCADE, related_name="entries")
     amount_micros = models.BigIntegerField(help_text="Positive adds credit, negative removes it.")
     kind = models.CharField(max_length=20, choices=Kind.choices)
+    message = models.ForeignKey("chat.Message", on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
     note = models.CharField(max_length=255, blank=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="+"

@@ -122,3 +122,14 @@ class AdminTests(TestCase):
         response = self.client.post(f"/admin/billing/billingaccount/{self.account.pk}/topup/", {"amount": "5.00"})
         self.assertEqual(response.status_code, 302)
         self.assertEqual(get_balance(self.account), 2_000_000)
+
+
+class BalanceFormatTests(TestCase):
+    def test_balance_rounds_down(self):
+        from .services import format_balance
+
+        self.assertEqual(format_balance(1_998_935), "$1.99")
+        self.assertEqual(format_balance(2_000_000), "$2.00")
+        self.assertEqual(format_balance(4_000), "$0.0040")
+        self.assertEqual(format_balance(0), "$0.00")
+        self.assertEqual(format_balance(-1_065), "-$0.01")

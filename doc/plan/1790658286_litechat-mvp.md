@@ -96,15 +96,20 @@ Commit: `feat(accounts): email signup and login with starting credit`
 ## Phase 6 — Sessions and chat streaming (the core loop)
 Commit: `feat(chat): sessions and metered streaming chat`
 
-- [ ] Add `LedgerEntry.message` FK (nullable, SET_NULL) to `chat.Message` (deferred from Phase 2).
-- [ ] Models: `ChatSession(user, title, ai_model, created_at, updated_at)`, `Message(session, role, content, ai_model nullable, input_tokens, output_tokens, cost_micros, created_at)`.
-- [ ] Sidebar session list (title + date, newest first). HTMX: new, rename inline, delete with confirm. Users see only their own sessions (404 otherwise).
-- [ ] Chat page: message list (Markdown rendered), model picker, balance, input box, send button.
-- [ ] Model picker: modal grouped by provider, card shows name, description, tier badge; shows "Costs will be charged to [Personal] …". Choice saved on the session.
-- [ ] `POST /chat/<id>/send`: validate; if balance ≤ 0 → HTTP 402 JSON "Out of credit". Save user message, set title if first. Stream NDJSON per the decision table. On finish: save assistant message + `charge` in `transaction.atomic`. On `ProviderError`: send `error` line, no charge.
-- [ ] Browser JS: `fetch` + `ReadableStream` reader, append deltas, re-render Markdown, on `done` update balance and show cost under the reply.
-- [ ] Verify streaming is incremental under `runserver` (no buffering). If not → footgun doc + fix.
-- [ ] Tests (mock `stream_chat`): charge equals `compute_cost`; out-of-credit returns 402 and no provider call; provider error → no charge, no assistant message; other user's session → 404.
+- [x] Add `LedgerEntry.message` FK (nullable, SET_NULL) to `chat.Message` (deferred from Phase 2).
+- [x] Models: `ChatSession(user, title, ai_model, created_at, updated_at)`, `Message(session, role, content, ai_model nullable, input_tokens, output_tokens, cost_micros, created_at)`.
+- [x] Sidebar session list (title + date, newest first). HTMX: new, rename inline, delete with confirm. Users see only their own sessions (404 otherwise).
+- [x] Chat page: message list (Markdown rendered), model picker, balance, input box, send button.
+- [x] Model picker: modal grouped by provider, card shows name, description, tier badge; shows "Costs will be charged to [Personal] …". Choice saved on the session.
+- [x] `POST /chat/<id>/send`: validate; if balance ≤ 0 → HTTP 402 JSON "Out of credit". Save user message, set title if first. Stream NDJSON per the decision table. On finish: save assistant message + `charge` in `transaction.atomic`. On `ProviderError`: send `error` line, no charge.
+- [x] Browser JS: `fetch` + `ReadableStream` reader, append deltas, re-render Markdown, on `done` update balance and show cost under the reply.
+- [x] Verify streaming is incremental under `runserver` (no buffering). If not → footgun doc + fix.
+- [x] Tests (mock `stream_chat`): charge equals `compute_cost`; out-of-credit returns 402 and no provider call; provider error → no charge, no assistant message; other user's session → 404.
+  - Verified live under `runserver` (2026-09-29): 297 NDJSON lines spread over ~0.9 s, so no buffering. GPT and Claude charged correctly; Gemini hit a proxy connect timeout once (not charged).
+  - Note: the proxy connect time varies from 0.2 s to 20+ s; connect timeout raised to 30 s (footgun logged).
+  - Note: balances are shown **rounded down** to the cent (`format_balance`), so the user never sees more credit than they have. Per-message costs use `format_usd` (4 places when < 1 cent).
+  - Note: copy button was built here (small), so the Phase 9 copy task is done.
+  - Known limitation: if the browser disconnects mid-stream, the generator stops and the reply is not saved or charged.
 
 ## Phase 7 — Profile and usage
 Commit: `feat(accounts): profile page with billing account and usage history`
@@ -125,7 +130,7 @@ Commit: `docs: README run guide and doc sync for MVP`
 
 - [ ] `feat(accounts): global system prompt` — profile textarea, prepended as system text.
 - [ ] `feat(accounts): manual memories with include toggle` — `MemoryItem(category, content)`, add/delete on profile, "Include Memories" toggle on chat adds them to system text.
-- [ ] `feat(chat): copy button on replies`.
+- [x] `feat(chat): copy button on replies` (done in Phase 6).
 
 ## After merge (human)
 

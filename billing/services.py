@@ -57,3 +57,11 @@ def format_usd(micros, places=2):
     if 0 < dollars < 0.01:
         places = max(places, 4)
     return f"{sign}${dollars:,.{places}f}"
+
+
+def format_balance(micros):
+    """Format a balance rounded down to the cent, so users never see more credit than they have."""
+    cents_micros = MICROS_PER_DOLLAR // 100
+    if 0 < micros < cents_micros:
+        return format_usd(micros)
+    return format_usd(micros // cents_micros * cents_micros)

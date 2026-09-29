@@ -7,7 +7,7 @@ from django.utils.html import format_html
 
 from .forms import AdjustmentForm, TopUpForm
 from .models import AIModel, BillingAccount, LedgerEntry, PricingSettings
-from .services import format_usd, top_up
+from .services import format_balance, format_usd, top_up
 
 
 @admin.register(AIModel)
@@ -64,7 +64,7 @@ class BillingAccountAdmin(admin.ModelAdmin):
         balance = getattr(obj, "_balance", None)
         if balance is None:
             balance = obj.entries.aggregate(total=Sum("amount_micros"))["total"]
-        return format_usd(balance or 0)
+        return format_balance(balance or 0)
 
     @admin.display(description="Top up")
     def top_up_link(self, obj):

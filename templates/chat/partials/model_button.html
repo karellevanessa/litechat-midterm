@@ -1,0 +1,4 @@
+<button type="button" class="model-btn" id="model-btn" onclick="document.getElementById('model-dialog').showModal()"
+        data-model="{{ current.ai_model.display_name|default:'' }}">
+  {{ current.ai_model.display_name|default:"Pick a model" }}
+</button>

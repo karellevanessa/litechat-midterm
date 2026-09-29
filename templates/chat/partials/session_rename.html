@@ -1,0 +1,6 @@
+<form class="session-item editing" id="session-{{ s.pk }}"
+      hx-post="{% url 'chat:session_rename' s.pk %}" hx-target="this" hx-swap="outerHTML">
+  <input type="hidden" name="current" value="{{ current_id|default:'' }}">
+  <input type="text" name="title" value="{{ s.title }}" maxlength="200" autofocus required>
+  <button class="icon-btn" title="Save" aria-label="Save">&#10003;</button>
+</form>
