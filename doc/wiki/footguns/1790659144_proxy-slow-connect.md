@@ -29,3 +29,7 @@ The human reported "The model took too long to answer" for a calculus question o
 Through the app at the same time, GPT and Claude answered the calculus question in < 6 s. Gemini failed once after 66 s ("Could not reach the model provider").
 
 Lesson: when one question fails and another works, suspect the proxy's connect time before the prompt content. A connection that never opens has not reached the model, so a retry is safe and cannot double-charge.
+
+## Mitigation in code (branch `fix/proxy-connect-retry`)
+
+`chat/providers.py` now retries **connection** failures (`ConnectError`, `ConnectTimeout`) up to 3 times with a 20 s connect timeout each. Read timeouts, HTTP error statuses and failures after the first event are **not** retried, so a reply can never be generated (or charged) twice. The browser shows "The AI service is busy. Retrying (2/3)…" while it waits. Live check: 5 of 6 calculus requests succeeded during heavy proxy load, 2 of them only because of the retry.

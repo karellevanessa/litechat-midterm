@@ -19,7 +19,7 @@ from billing.services import (
 )
 
 from .models import ChatSession, Message
-from .providers import Delta, ProviderError, stream_chat
+from .providers import Delta, ProviderError, Retry, stream_chat
 
 HISTORY_LIMIT = 20
 TITLE_LENGTH = 40
@@ -194,11 +194,13 @@ def _stream_reply(session, account, ai_model, system, history):
             if isinstance(event, Delta):
                 parts.append(event.text)
                 yield _line(type="delta", text=event.text)
+            elif isinstance(event, Retry):
+                yield _line(type="status", message=f"The AI service is busy. Retrying ({event.attempt}/{event.total})…")
             else:
                 usage = event
     except ProviderError as exc:
         # Failed calls are free: no assistant message and no charge.
-        yield _line(type="error", message=str(exc))
+        yield _line(type="error", message=f"{exc} Your message was not charged.")
         return
 
     text = "".join(parts)

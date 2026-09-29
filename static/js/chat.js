@@ -111,6 +111,9 @@
           target.meta.textContent = event.model + " · " + event.cost;
           setBalance(event.balance, event.out_of_credit);
           refreshSessions();
+        } else if (event.type === "status") {
+          const typing = target.md.querySelector(".typing");
+          if (typing) typing.textContent = event.message;
         } else if (event.type === "error") {
           showError(target, event.message);
         }

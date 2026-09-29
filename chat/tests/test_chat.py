@@ -7,7 +7,7 @@ from django.test import TestCase
 from billing.models import AIModel, LedgerEntry
 from billing.services import compute_cost, get_balance, open_personal_account, top_up
 from chat.models import ChatSession, Message
-from chat.providers import Delta, ProviderError, Usage
+from chat.providers import Delta, ProviderError, Retry, Usage
 
 User = get_user_model()
 
@@ -92,9 +92,16 @@ class SendTests(ChatTestCase):
     def test_provider_error_is_free(self):
         with mock.patch("chat.views.stream_chat", fake_stream(Delta("partial"), error="The provider is busy.")):
             lines = read_lines(self.client.post(self.send_url, {"content": "Hi"}))
-        self.assertEqual(lines[-1], {"type": "error", "message": "The provider is busy."})
+        self.assertEqual(lines[-1], {"type": "error", "message": "The provider is busy. Your message was not charged."})
         self.assertFalse(Message.objects.filter(role="assistant").exists())
         self.assertEqual(get_balance(self.account), 2_000_000)
+
+    def test_retry_is_reported_and_reply_charged_once(self):
+        with mock.patch("chat.views.stream_chat", fake_stream(Retry(2, 3), Delta("ok"), Usage(210, 100))):
+            lines = read_lines(self.client.post(self.send_url, {"content": "Hi"}))
+        self.assertEqual([l["type"] for l in lines], ["status", "delta", "done"])
+        self.assertIn("Retrying (2/3)", lines[0]["message"])
+        self.assertEqual(self.account.entries.filter(kind=LedgerEntry.Kind.CHARGE).count(), 1)
 
     def test_empty_reply_is_charged_and_flagged(self):
         with mock.patch("chat.views.stream_chat", fake_stream(Usage(212, 50))):
