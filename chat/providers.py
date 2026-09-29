@@ -6,23 +6,37 @@ See doc/study/1790658061_litechat-core.md (section 4) and doc/wiki/footguns/.
 Usage:
     for event in stream_chat(ai_model, system_text, [{"role": "user", "content": "Hi"}]):
         if isinstance(event, Delta): ...
+        elif isinstance(event, Retry): ...
         elif isinstance(event, Usage): ...
 """
 
 import json
+import time
 from dataclasses import dataclass
 
 import httpx
 from django.conf import settings
 
 ANTHROPIC_MAX_TOKENS = 4096
-# The shared proxy can take 20 s just to accept a connection; see doc/wiki/footguns/.
-TIMEOUT = httpx.Timeout(120.0, connect=30.0)
+# The shared proxy can take 20 s just to accept a connection, or never accept it;
+# see doc/wiki/footguns/. A failed connection never reached the model, so it is
+# retried; worst case the user waits CONNECT_ATTEMPTS x 20 s before the error.
+TIMEOUT = httpx.Timeout(120.0, connect=20.0)
+CONNECT_ATTEMPTS = 3
+RETRY_DELAY_SECONDS = 1.0
 
 
 @dataclass
 class Delta:
     text: str
+
+
+@dataclass
+class Retry:
+    """The connection failed; attempt number `attempt` of `total` is starting."""
+
+    attempt: int
+    total: int
 
 
 @dataclass
@@ -36,7 +50,10 @@ class ProviderError(Exception):
 
 
 def stream_chat(ai_model, system, messages, transport=None):
-    """Yield Delta events, then exactly one Usage event. Raise ProviderError on failure."""
+    """Yield Delta events (and Retry events while reconnecting), then exactly one Usage event.
+
+    Raise ProviderError on failure.
+    """
     adapter = ADAPTERS.get(ai_model.provider)
     if adapter is None:
         raise ProviderError(f"Unknown provider: {ai_model.provider}.")
@@ -45,17 +62,32 @@ def stream_chat(ai_model, system, messages, transport=None):
         raise ProviderError(f"No proxy key is configured for {ai_model.get_provider_display()}.")
     base = settings.LITECHAT_PROXY_BASE_URL.rstrip("/")
     url, headers, body = adapter["request"](base, key, ai_model.model_id, system, messages)
-    try:
-        with httpx.Client(timeout=TIMEOUT, transport=transport) as client:
-            with client.stream("POST", url, headers=headers, json=body) as response:
-                if response.status_code != 200:
-                    response.read()
-                    raise ProviderError(_error_message(response))
-                yield from adapter["parse"](_sse_data(response))
-    except httpx.TimeoutException as exc:
-        raise ProviderError("The model took too long to answer. Please try again.") from exc
-    except httpx.HTTPError as exc:
-        raise ProviderError("Could not reach the model provider. Please try again.") from exc
+
+    for attempt in range(1, CONNECT_ATTEMPTS + 1):
+        started = False
+        try:
+            with httpx.Client(timeout=TIMEOUT, transport=transport) as client:
+                with client.stream("POST", url, headers=headers, json=body) as response:
+                    if response.status_code != 200:
+                        response.read()
+                        raise ProviderError(_error_message(response))
+                    for event in adapter["parse"](_sse_data(response)):
+                        started = True
+                        yield event
+            return
+        except (httpx.ConnectError, httpx.ConnectTimeout) as exc:
+            # Only a connection that never opened is retried: the model never saw the request.
+            if started or attempt == CONNECT_ATTEMPTS:
+                raise ProviderError(
+                    f"Could not connect to the AI service after {attempt} tries. "
+                    "It is busy right now. Try again, or pick another model."
+                ) from exc
+            yield Retry(attempt + 1, CONNECT_ATTEMPTS)
+            time.sleep(RETRY_DELAY_SECONDS)
+        except httpx.TimeoutException as exc:
+            raise ProviderError("The model took too long to answer. Please try again.") from exc
+        except httpx.HTTPError as exc:
+            raise ProviderError("Could not reach the model provider. Please try again.") from exc
 
 
 def _sse_data(response):

@@ -1,11 +1,12 @@
 import json
+from unittest import mock
 
 import httpx
 from django.test import TestCase, override_settings
 
 from billing.models import AIModel
 
-from chat.providers import Delta, ProviderError, Usage, stream_chat
+from chat.providers import Delta, ProviderError, Retry, Usage, stream_chat
 
 KEYS = {"openai": "test-openai", "anthropic": "test-anthropic", "google": "test-google"}
 
@@ -156,3 +157,60 @@ class GoogleAdapterTests(TestCase):
     def test_server_error_raises(self):
         with self.assertRaisesMessage(ProviderError, "503"):
             run(self.MODEL, b"oops", status=503)
+
+
+OK_BODY = sse(
+    {"choices": [{"delta": {"content": "Hi"}, "index": 0}]},
+    {"choices": [], "usage": {"prompt_tokens": 10, "completion_tokens": 2}},
+    done=True,
+)
+
+
+def flaky_transport(failures, calls):
+    """Fail the first `failures` calls with the given exceptions, then answer normally."""
+
+    def handler(request):
+        calls.append(request)
+        if len(calls) <= len(failures):
+            raise failures[len(calls) - 1]("proxy did not accept the connection", request=request)
+        return httpx.Response(200, content=OK_BODY)
+
+    return httpx.MockTransport(handler)
+
+
+@override_settings(LITECHAT_PROXY_KEYS=KEYS, LITECHAT_PROXY_BASE_URL="https://proxy.test")
+@mock.patch("chat.providers.RETRY_DELAY_SECONDS", 0)
+class ConnectRetryTests(TestCase):
+    def stream(self, transport):
+        return list(stream_chat(AIModel.objects.get(model_id="gpt-5.6-luna"), "", [{"role": "user", "content": "Hi"}], transport=transport))
+
+    def test_connect_failures_are_retried_then_succeed(self):
+        calls = []
+        events = self.stream(flaky_transport([httpx.ConnectTimeout, httpx.ConnectError], calls))
+        self.assertEqual(len(calls), 3)
+        self.assertEqual(events[:2], [Retry(2, 3), Retry(3, 3)])
+        self.assertEqual(text_of(events), "Hi")
+        self.assertEqual(events[-1], Usage(10, 2))
+
+    def test_gives_up_after_three_attempts(self):
+        calls = []
+        with self.assertRaisesMessage(ProviderError, "after 3 tries"):
+            self.stream(flaky_transport([httpx.ConnectTimeout] * 3, calls))
+        self.assertEqual(len(calls), 3)
+
+    def test_read_timeout_is_not_retried(self):
+        calls = []
+        with self.assertRaisesMessage(ProviderError, "took too long"):
+            self.stream(flaky_transport([httpx.ReadTimeout], calls))
+        self.assertEqual(len(calls), 1)
+
+    def test_http_error_status_is_not_retried(self):
+        calls = []
+
+        def handler(request):
+            calls.append(request)
+            return httpx.Response(503, content=b"busy")
+
+        with self.assertRaises(ProviderError):
+            self.stream(httpx.MockTransport(handler))
+        self.assertEqual(len(calls), 1)
