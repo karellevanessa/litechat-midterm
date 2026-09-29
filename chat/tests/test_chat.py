@@ -7,6 +7,7 @@ from django.test import TestCase
 from billing.models import AIModel, LedgerEntry
 from billing.services import compute_cost, get_balance, open_personal_account, top_up
 from chat.models import ChatSession, Message
+from chat.prompts import TUTOR_PROMPT
 from chat.providers import Delta, ProviderError, Retry, Usage
 
 User = get_user_model()
@@ -181,6 +182,7 @@ class SystemPromptSendTests(ChatTestCase):
     def test_global_system_prompt_is_sent(self):
         self.user.global_system_prompt = "Answer in French."
         self.user.save()
+        ChatSession.objects.filter(pk=self.session.pk).update(tutor_mode=False)
         captured = {}
 
         def stream(ai_model, system, messages, transport=None):
@@ -214,6 +216,40 @@ class MemorySendTests(ChatTestCase):
 
     def test_memories_left_out_when_toggle_off(self):
         self.user.memories.create(content="My name is Karelle.")
+        ChatSession.objects.filter(pk=self.session.pk).update(tutor_mode=False)
         response = self.client.post(f"/sessions/{self.session.pk}/memories/")
         self.assertContains(response, 'aria-checked="false"')
         self.assertEqual(self.capture_system(), "")
+
+
+class TutorModeTests(ChatTestCase):
+    capture_system = MemorySendTests.capture_system
+
+    def test_new_session_has_tutor_mode_on(self):
+        self.client.post("/sessions/new/")
+        self.assertTrue(ChatSession.objects.exclude(pk=self.session.pk).get().tutor_mode)
+
+    def test_tutor_text_sent_last_when_on(self):
+        self.user.global_system_prompt = "Be brief."
+        self.user.save()
+        self.user.memories.create(category="personal", content="I study biology.")
+        system = self.capture_system()
+        self.assertTrue(system.startswith("Be brief."))
+        self.assertLess(system.index("I study biology."), system.index(TUTOR_PROMPT))
+        self.assertTrue(system.endswith(TUTOR_PROMPT))
+
+    def test_toggle_off_removes_tutor_text(self):
+        response = self.client.post(f"/sessions/{self.session.pk}/tutor/")
+        self.assertContains(response, 'aria-checked="false"')
+        self.assertContains(response, "Tutor mode")
+        self.assertNotIn(TUTOR_PROMPT, self.capture_system())
+        response = self.client.post(f"/sessions/{self.session.pk}/tutor/")
+        self.assertContains(response, 'aria-checked="true"')
+
+    def test_other_users_session_cannot_be_toggled(self):
+        other = User.objects.create_user(email="o@example.com", password="pw-123456")
+        self.client.force_login(other)
+        self.assertEqual(self.client.post(f"/sessions/{self.session.pk}/tutor/").status_code, 404)
+
+    def test_switch_is_on_the_chat_page(self):
+        self.assertContains(self.client.get(f"/sessions/{self.session.pk}/"), 'id="tutor-toggle"')

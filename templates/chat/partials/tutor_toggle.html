@@ -1,0 +1,6 @@
+<button type="button" class="toggle {% if current.tutor_mode %}on{% endif %}" id="tutor-toggle"
+        hx-post="{% url 'chat:session_toggle_tutor' current.pk %}" hx-swap="outerHTML"
+        role="switch" aria-checked="{{ current.tutor_mode|yesno:'true,false' }}"
+        title="Explains step by step. Replies are longer, so they cost a little more.">
+  Tutor mode <span class="switch"></span>
+</button>

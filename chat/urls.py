@@ -13,5 +13,6 @@ urlpatterns = [
     path("sessions/<int:pk>/delete/", views.session_delete, name="session_delete"),
     path("sessions/<int:pk>/model/", views.session_set_model, name="session_set_model"),
     path("sessions/<int:pk>/memories/", views.session_toggle_memories, name="session_toggle_memories"),
+    path("sessions/<int:pk>/tutor/", views.session_toggle_tutor, name="session_toggle_tutor"),
     path("sessions/<int:pk>/send/", views.send, name="send"),
 ]

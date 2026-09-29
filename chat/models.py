@@ -7,6 +7,7 @@ class ChatSession(models.Model):
     title = models.CharField(max_length=200, blank=True)
     ai_model = models.ForeignKey("billing.AIModel", on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
     include_memories = models.BooleanField(default=True)
+    tutor_mode = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
