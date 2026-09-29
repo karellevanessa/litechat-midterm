@@ -92,3 +92,23 @@ class SystemPromptTests(TestCase):
         self.user.refresh_from_db()
         self.assertEqual(self.user.global_system_prompt, "Answer in French.")
         self.assertContains(self.client.get("/accounts/profile/"), "Answer in French.")
+
+
+class MemoryTests(TestCase):
+    def setUp(self):
+        self.client.post("/accounts/signup/", SIGNUP)
+        self.user = User.objects.get()
+
+    def test_add_and_delete_memory(self):
+        self.client.post("/accounts/profile/memories/", {"category": "preference", "content": "I like short answers."})
+        memory = self.user.memories.get()
+        self.assertContains(self.client.get("/accounts/profile/"), "I like short answers.")
+        self.client.post(f"/accounts/profile/memories/{memory.pk}/delete/")
+        self.assertFalse(self.user.memories.exists())
+
+    def test_cannot_delete_other_users_memory(self):
+        other = User.objects.create_user(email="o@example.com", password="pw-123456")
+        memory = other.memories.create(content="private")
+        response = self.client.post(f"/accounts/profile/memories/{memory.pk}/delete/")
+        self.assertEqual(response.status_code, 404)
+        self.assertTrue(other.memories.exists())

@@ -133,7 +133,7 @@ Commit: `docs: README run guide and doc sync for MVP`
 
 
 - [x] `feat(accounts): global system prompt` — profile textarea, prepended as system text.
-- [ ] `feat(accounts): manual memories with include toggle` — `MemoryItem(category, content)`, add/delete on profile, "Include Memories" toggle on chat adds them to system text.
+- [x] `feat(accounts): manual memories with include toggle` — `MemoryItem(category, content)`, add/delete on profile, "Include Memories" toggle on chat adds them to system text.
 - [x] `feat(chat): copy button on replies` (done in Phase 6).
 
 ## After merge (human)

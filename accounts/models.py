@@ -44,3 +44,24 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.display_name or self.email
+
+
+class MemoryItem(models.Model):
+    """A fact the user asks the assistant to remember. Sent as system text when memories are included."""
+
+    class Category(models.TextChoices):
+        PREFERENCE = "preference", "Preference"
+        PERSONAL = "personal", "Personal"
+        WORK = "work", "Work"
+        OTHER = "other", "Other"
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="memories")
+    category = models.CharField(max_length=20, choices=Category.choices, default=Category.PREFERENCE)
+    content = models.CharField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at", "id"]
+
+    def __str__(self):
+        return f"[{self.get_category_display()}] {self.content}"

@@ -7,6 +7,8 @@ from .forms import EmailAuthenticationForm
 urlpatterns = [
     path("signup/", views.signup, name="signup"),
     path("profile/", views.profile, name="profile"),
+    path("profile/memories/", views.add_memory, name="add_memory"),
+    path("profile/memories/<int:pk>/delete/", views.delete_memory, name="delete_memory"),
     path("profile/system-prompt/", views.save_system_prompt, name="save_system_prompt"),
     path(
         "login/",

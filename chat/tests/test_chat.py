@@ -180,3 +180,30 @@ class SystemPromptSendTests(ChatTestCase):
         with mock.patch("chat.views.stream_chat", stream):
             read_lines(self.client.post(self.send_url, {"content": "Hi"}))
         self.assertEqual(captured["system"], "Answer in French.")
+
+
+class MemorySendTests(ChatTestCase):
+    def capture_system(self):
+        captured = {}
+
+        def stream(ai_model, system, messages, transport=None):
+            captured["system"] = system
+            yield Usage(1, 1)
+
+        with mock.patch("chat.views.stream_chat", stream):
+            read_lines(self.client.post(self.send_url, {"content": "Hi"}))
+        return captured["system"]
+
+    def test_memories_included_when_toggle_on(self):
+        self.user.global_system_prompt = "Be brief."
+        self.user.save()
+        self.user.memories.create(category="personal", content="My name is Karelle.")
+        system = self.capture_system()
+        self.assertTrue(system.startswith("Be brief."))
+        self.assertIn("- [Personal] My name is Karelle.", system)
+
+    def test_memories_left_out_when_toggle_off(self):
+        self.user.memories.create(content="My name is Karelle.")
+        response = self.client.post(f"/sessions/{self.session.pk}/memories/")
+        self.assertContains(response, 'aria-checked="false"')
+        self.assertEqual(self.capture_system(), "")

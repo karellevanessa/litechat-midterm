@@ -136,3 +136,18 @@ input[type=text], input[type=email], input[type=password], textarea, select {
 .usage .neg { color: var(--text); }
 .usage .pos { color: var(--ok); font-weight: 600; }
 @media (max-width: 760px) { .facts { grid-template-columns: 1fr; row-gap: 4px; } .facts dd { margin-bottom: 8px; } }
+
+/* Memories */
+.center { text-align: center; }
+.memory-list { list-style: none; padding: 0; margin: 0 0 16px; display: flex; flex-direction: column; gap: 8px; }
+.memory-list li { display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; }
+.memory-list form { margin: 0 0 0 auto; }
+.memory-text { flex: 1; }
+.memory-form { display: grid; grid-template-columns: 160px 1fr auto; gap: 12px; align-items: center; margin-top: 12px; }
+@media (max-width: 760px) { .memory-form { grid-template-columns: 1fr; } }
+.toggle { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: var(--panel); border-radius: 999px; padding: 5px 8px 5px 14px; cursor: pointer; font: inherit; font-size: 13px; color: var(--muted); }
+.toggle.on { background: var(--blue-softer); border-color: #b9d6ec; color: var(--blue); }
+.switch { width: 34px; height: 20px; border-radius: 999px; background: #cfd6dd; position: relative; transition: background .15s; }
+.switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: left .15s; }
+.toggle.on .switch { background: #7fb2d9; }
+.toggle.on .switch::after { left: 16px; }

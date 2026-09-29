@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AdminUserCreationForm, AuthenticationForm, BaseUserCreationForm, UserChangeForm
 
-from .models import User
+from .models import MemoryItem, User
 
 
 class AdminEmailUserCreationForm(AdminUserCreationForm):
@@ -46,3 +46,10 @@ class SystemPromptForm(forms.ModelForm):
                 attrs={"rows": 5, "placeholder": "e.g., You are a helpful assistant that..."}
             )
         }
+
+
+class MemoryItemForm(forms.ModelForm):
+    class Meta:
+        model = MemoryItem
+        fields = ("category", "content")
+        widgets = {"content": forms.TextInput(attrs={"placeholder": "Enter memory content..."})}

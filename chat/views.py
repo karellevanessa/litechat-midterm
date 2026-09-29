@@ -124,13 +124,29 @@ def session_set_model(request, pk):
     return render(request, "chat/partials/model_button.html", {"current": session})
 
 
+@login_required
+@require_POST
+def session_toggle_memories(request, pk):
+    session = get_object_or_404(_sessions(request.user), pk=pk)
+    session.include_memories = not session.include_memories
+    session.save(update_fields=["include_memories"])
+    return render(request, "chat/partials/memory_toggle.html", {"current": session})
+
+
 def _line(**payload):
     return json.dumps(payload) + "\n"
 
 
-def build_system_prompt(user):
+def build_system_prompt(user, include_memories=False):
     """System text sent with every request, built from the user's profile settings."""
-    return user.global_system_prompt.strip()
+    parts = []
+    if user.global_system_prompt.strip():
+        parts.append(user.global_system_prompt.strip())
+    if include_memories:
+        memories = [f"- [{m.get_category_display()}] {m.content}" for m in user.memories.all()]
+        if memories:
+            parts.append("Things the user asked you to remember about them:\n" + "\n".join(memories))
+    return "\n\n".join(parts)
 
 
 @login_required
@@ -164,7 +180,7 @@ def send(request, pk):
     while history and history[0]["role"] != Message.Role.USER:
         history.pop(0)
 
-    stream = _stream_reply(session, account, ai_model, build_system_prompt(request.user), history)
+    stream = _stream_reply(session, account, ai_model, build_system_prompt(request.user, session.include_memories), history)
     response = StreamingHttpResponse(stream, content_type="application/x-ndjson")
     response["Cache-Control"] = "no-cache"
     response["X-Accel-Buffering"] = "no"

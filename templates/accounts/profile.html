@@ -23,6 +23,32 @@
     </form>
   </section>
 
+  <section class="card">
+    <h2>Memories</h2>
+    <p class="muted">Store personal information that the assistant can remember about you. Turn on "Include Memories" in a chat to use them.</p>
+    {% if memories %}
+    <ul class="memory-list">
+      {% for m in memories %}
+      <li>
+        <span class="tier">{{ m.get_category_display }}</span>
+        <span class="memory-text">{{ m.content }}</span>
+        <form method="post" action="{% url 'delete_memory' m.pk %}">{% csrf_token %}
+          <button class="icon-btn" title="Delete" aria-label="Delete memory">&#128465;</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="muted center"><em>No memory items yet. Add your first one below.</em></p>
+    {% endif %}
+    <form method="post" action="{% url 'add_memory' %}" class="memory-form">
+      {% csrf_token %}
+      {{ memory_form.category }}
+      {{ memory_form.content }}
+      <button class="btn primary" type="submit">Add Memory Item</button>
+    </form>
+  </section>
+
   <h2 class="section-title">Billing Accounts</h2>
   {% for row in accounts %}
   <section class="card billing-row">

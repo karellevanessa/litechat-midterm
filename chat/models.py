@@ -6,6 +6,7 @@ class ChatSession(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="chat_sessions")
     title = models.CharField(max_length=200, blank=True)
     ai_model = models.ForeignKey("billing.AIModel", on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
+    include_memories = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
