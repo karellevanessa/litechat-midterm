@@ -63,11 +63,12 @@ Commit: `feat(billing): add models, pricing, ledger and seed catalog`
 ## Phase 3 — Admin
 Commit: `feat(billing): admin for prices, markup and credit top-ups`
 
-- [ ] Register `AIModel` (list-editable prices, tier, active), `PricingSettings` (no add/delete beyond the singleton).
-- [ ] `BillingAccount` admin shows owner, status, **balance**; inline read-only ledger.
-- [ ] Admin action / form "Top up" (amount in dollars + note) → creates `topup` entry with `created_by`.
-- [ ] `LedgerEntry` read-only after create; admin may add `adjustment` entries only.
-- [ ] Tests: top-up creates the entry and changes balance; non-staff cannot reach admin.
+- [x] Register `AIModel` (list-editable prices, tier, active), `PricingSettings` (no add/delete beyond the singleton).
+- [x] `BillingAccount` admin shows owner, status, **balance**; inline read-only ledger.
+- [x] Admin action / form "Top up" (amount in dollars + note) → creates `topup` entry with `created_by`.
+- [x] `LedgerEntry` read-only after create; admin may add `adjustment` entries only.
+- [x] Tests: top-up creates the entry and changes balance; non-staff cannot reach admin.
+  - Note: top-up is a custom admin page at `/admin/billing/billingaccount/<id>/topup/` (button in list and on the account page). Adjustments are added at `/admin/billing/ledgerentry/add/` in dollars (may be negative).
 
 ## Phase 4 — Provider adapters
 Commit: `feat(chat): add streaming adapters for OpenAI, Anthropic and Google proxy`
