@@ -11,7 +11,7 @@
 
   function renderMarkdown(el, raw) {
     el.dataset.raw = raw;
-    el.innerHTML = DOMPurify.sanitize(marked.parse(raw));
+    el.innerHTML = window.renderRich(raw);
   }
 
   function scrollToBottom() {

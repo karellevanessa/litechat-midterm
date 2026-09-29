@@ -157,3 +157,7 @@ input[type=text], input[type=email], input[type=password], textarea, select {
 :focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 input:focus, textarea:focus, select:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft); }
 .input-row:focus-within { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft); }
+
+/* Math (KaTeX) */
+.math-display { overflow-x: auto; overflow-y: hidden; margin: 12px 0; }
+.md .katex { font-size: 1.08em; }
