@@ -1,0 +1,14 @@
+{% extends "registration/auth_base.html" %}
+{% block title %}Log in · LiteChat{% endblock %}
+{% block auth %}
+<h1>Log in</h1>
+<form method="post" class="form">
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="error">{{ form.non_field_errors|join:" " }}</div>{% endif %}
+  <label>Email <input type="email" name="username" value="{{ form.username.value|default:'' }}" required autofocus autocomplete="email"></label>
+  <label>Password <input type="password" name="password" required autocomplete="current-password"></label>
+  <input type="hidden" name="next" value="{{ next }}">
+  <button class="btn primary" type="submit">Log in</button>
+</form>
+<p class="muted">No account? <a href="{% url 'signup' %}">Sign up and get free credit</a></p>
+{% endblock %}

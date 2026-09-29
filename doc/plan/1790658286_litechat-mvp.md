@@ -87,10 +87,11 @@ Commit: `feat(chat): add streaming adapters for OpenAI, Anthropic and Google pro
 ## Phase 5 — Signup, login, layout
 Commit: `feat(accounts): email signup and login with starting credit`
 
-- [ ] Signup form (display name, email, password ×2). On success, in one transaction: create user, `BillingAccount` "[Personal] {display name}", `grant` entry of `signup_grant_micros`. Log in, redirect to chat.
-- [ ] Login / logout (Django auth views, email field). All app pages `login_required`.
-- [ ] Base template: sidebar (logo, CHAT, My Profile, SESSIONS with +, logout), main area; HTMX + marked + DOMPurify from cdnjs; simple CSS close to the real app (light grey, blue accents).
-- [ ] Tests: signup creates account + $2.00 balance; duplicate email rejected; anonymous redirect to login.
+- [x] Signup form (display name, email, password ×2). On success, in one transaction: create user, `BillingAccount` "[Personal] {display name}", `grant` entry of `signup_grant_micros`. Log in, redirect to chat.
+- [x] Login / logout (Django auth views, email field). All app pages `login_required`.
+- [x] Base template: sidebar (logo, CHAT, My Profile, SESSIONS with +, logout), main area; HTMX + marked + DOMPurify from cdnjs; simple CSS close to the real app (light grey, blue accents).
+- [x] Tests: signup creates account + $2.00 balance; duplicate email rejected; anonymous redirect to login.
+  - Note: emails are stored and matched in lowercase. Balance reaches every template via `accounts.context_processors.billing`. Profile link is a placeholder until Phase 7.
 
 ## Phase 6 — Sessions and chat streaming (the core loop)
 Commit: `feat(chat): sessions and metered streaming chat`

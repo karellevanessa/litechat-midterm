@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block main %}
+<div class="empty-state">
+  <h2>Hello{% if user.display_name %}, {{ user.display_name }}{% endif %}!</h2>
+  <p class="muted">Start a new session to chat.</p>
+</div>
+{% endblock %}

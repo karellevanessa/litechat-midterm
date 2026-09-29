@@ -1,0 +1,45 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}LiteChat{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.4/dist/htmx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@15.0.7/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.4/dist/purify.min.js"></script>
+  {% block head %}{% endblock %}
+</head>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+{% block body %}
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand-row">
+      <a class="brand" href="{% url 'chat:index' %}">{% include "partials/logo.html" %}<span>LiteChat</span></a>
+      <form method="post" action="{% url 'logout' %}">{% csrf_token %}
+        <button class="icon-btn" title="Log out" aria-label="Log out">&#x21E5;</button>
+      </form>
+    </div>
+    <nav>
+      <div class="nav-label">Apps</div>
+      <a class="nav-item {% if request.resolver_match.app_name == 'chat' %}active{% endif %}" href="{% url 'chat:index' %}">&#128172; Chat</a>
+      <hr>
+      <div class="nav-label">Account</div>
+      <a class="nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="#">&#128100; My Profile</a>
+      {% if user.is_staff %}<a class="nav-item" href="{% url 'admin:index' %}">&#9881; Admin</a>{% endif %}
+    </nav>
+    <div class="credit-chip" id="credit-chip">
+      <span>Available credit</span>
+      <strong id="balance">{{ balance_display|default:"$0.00" }}</strong>
+    </div>
+    {% block sidebar_extra %}{% endblock %}
+  </aside>
+  <main class="main">
+    {% if messages %}<div class="flash">{% for m in messages %}<div class="flash-item {{ m.tags }}">{{ m }}</div>{% endfor %}</div>{% endif %}
+    {% block main %}{% endblock %}
+  </main>
+</div>
+{% endblock %}
+{% block scripts %}{% endblock %}
+</body>
+</html>

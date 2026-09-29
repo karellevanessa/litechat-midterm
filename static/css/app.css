@@ -1,0 +1,61 @@
+:root {
+  --bg: #f3f4f6;
+  --panel: #ffffff;
+  --border: #e2e5e9;
+  --text: #1f2933;
+  --muted: #8a96a3;
+  --blue: #2f6fa3;
+  --blue-soft: #d7e9f6;
+  --blue-softer: #eaf4fb;
+  --assistant: #e6e7ea;
+  --danger: #b42318;
+  --ok: #2e7d32;
+  --radius: 10px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: var(--text); background: var(--bg); font-size: 15px; }
+a { color: var(--blue); }
+.muted { color: var(--muted); }
+.error { color: var(--danger); font-size: 13px; }
+hr { border: 0; border-top: 1px solid var(--border); margin: 12px 0; }
+
+/* Buttons and forms */
+.btn { border: 1px solid var(--border); background: var(--panel); border-radius: 8px; padding: 8px 14px; cursor: pointer; font: inherit; color: var(--text); }
+.btn.primary { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.icon-btn { border: 0; background: none; cursor: pointer; font-size: 18px; color: var(--blue); padding: 4px; }
+.form { display: flex; flex-direction: column; gap: 12px; }
+.form label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+input[type=text], input[type=email], input[type=password], textarea, select {
+  font: inherit; color: var(--text); padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: #f9fafb; width: 100%;
+}
+
+/* Auth pages */
+.auth-page { min-height: 100%; display: grid; place-items: center; padding: 24px; }
+.auth-card { width: 100%; max-width: 400px; background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 28px; }
+.auth-card h1 { font-size: 20px; margin: 16px 0; }
+
+/* App shell */
+.app { display: flex; height: 100vh; }
+.sidebar { width: 280px; flex-shrink: 0; background: var(--panel); border-right: 1px solid var(--border); padding: 20px 16px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+.brand-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 18px; color: var(--text); text-decoration: none; }
+.logo { width: 30px; height: 30px; }
+.nav-label { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 8px 8px 4px; display: flex; justify-content: space-between; align-items: center; }
+.nav-item { display: block; padding: 9px 10px; border-radius: 8px; color: var(--text); text-decoration: none; }
+.nav-item:hover { background: var(--bg); }
+.nav-item.active { background: var(--blue-softer); font-weight: 600; }
+.credit-chip { display: flex; justify-content: space-between; align-items: center; background: var(--blue-softer); border-radius: 8px; padding: 8px 10px; font-size: 13px; color: var(--muted); margin-top: 4px; }
+.credit-chip strong { color: var(--blue); font-size: 15px; }
+.credit-chip.empty strong { color: var(--danger); }
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.flash { padding: 8px 24px 0; }
+.flash-item { background: var(--blue-softer); border-radius: 8px; padding: 8px 12px; margin-bottom: 4px; }
+.flash-item.error { background: #fdecea; color: var(--danger); }
+.empty-state { margin: auto; text-align: center; padding: 24px; }
+
+@media (max-width: 760px) {
+  .app { flex-direction: column; height: auto; min-height: 100vh; }
+  .sidebar { width: 100%; border-right: 0; border-bottom: 1px solid var(--border); max-height: 45vh; }
+}
