@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load billing_tags %}
+{% block title %}My Profile · LiteChat{% endblock %}
+{% block main %}
+<div class="page">
+  <section class="card">
+    <h2>User Profile</h2>
+    <dl class="facts">
+      <dt>Display name</dt><dd>{{ user.display_name|default:"—" }}</dd>
+      <dt>Email</dt><dd>{{ user.email }}</dd>
+      <dt>User ID</dt><dd>{{ user.pk }}</dd>
+      <dt>Member since</dt><dd>{{ user.date_joined|date:"F j, Y" }}</dd>
+    </dl>
+  </section>
+
+  <section class="card">
+    <h2>Global System Prompt</h2>
+    <p class="muted">This instruction will apply to all chat sessions.</p>
+    <form method="post" action="{% url 'save_system_prompt' %}" class="form">
+      {% csrf_token %}
+      {{ prompt_form.global_system_prompt }}
+      <div><button class="btn primary" type="submit">Save Prompt</button></div>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>Memories</h2>
+    <p class="muted">Store personal information that the assistant can remember about you. Turn on "Include Memories" in a chat to use them.</p>
+    {% if memories %}
+    <ul class="memory-list">
+      {% for m in memories %}
+      <li>
+        <span class="tier">{{ m.get_category_display }}</span>
+        <span class="memory-text">{{ m.content }}</span>
+        <form method="post" action="{% url 'delete_memory' m.pk %}">{% csrf_token %}
+          <button class="icon-btn" title="Delete" aria-label="Delete memory">&#128465;</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="muted center"><em>No memory items yet. Add your first one below.</em></p>
+    {% endif %}
+    <form method="post" action="{% url 'add_memory' %}" class="memory-form">
+      {% csrf_token %}
+      {{ memory_form.category }}
+      {{ memory_form.content }}
+      <button class="btn primary" type="submit">Add Memory Item</button>
+    </form>
+  </section>
+
+  <h2 class="section-title">Billing Accounts</h2>
+  {% for row in accounts %}
+  <section class="card billing-row">
+    <div>
+      <div class="account-name">{{ row.account.name }}</div>
+      <span class="badge {{ row.account.status }}">{{ row.account.get_status_display }}</span>
+    </div>
+    <div class="credit">
+      <span class="muted">Available credit</span>
+      <strong>{{ row.balance }}</strong>
+    </div>
+  </section>
+  {% empty %}
+  <section class="card"><p class="muted">No billing account yet. Open the chat to create one.</p></section>
+  {% endfor %}
+
+  <h2 class="section-title">Usage History</h2>
+  <section class="card">
+    {% if entries %}
+    <div class="table-wrap">
+      <table class="usage">
+        <thead><tr><th>Date</th><th>Type</th><th>Details</th><th class="num">Amount</th></tr></thead>
+        <tbody>
+        {% for e in entries %}
+          <tr>
+            <td>{{ e.created_at|date:"M j, H:i" }}</td>
+            <td>{{ e.get_kind_display }}</td>
+            <td>{% if e.message %}{{ e.message.ai_model.display_name|default:"Model" }} · {{ e.message.input_tokens }} in / {{ e.message.output_tokens }} out tokens{% else %}{{ e.note|default:"—" }}{% endif %}</td>
+            <td class="num {% if e.amount_micros < 0 %}neg{% else %}pos{% endif %}">{{ e.amount_micros|usd }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="muted">No activity yet.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

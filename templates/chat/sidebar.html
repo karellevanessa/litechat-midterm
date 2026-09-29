@@ -1,0 +1,9 @@
+<div class="nav-label">Sessions
+  <form method="post" action="{% url 'chat:session_new' %}">{% csrf_token %}
+    <button class="icon-btn" title="New session" aria-label="New session">+</button>
+  </form>
+</div>
+<div id="session-list" class="session-list"
+     data-url="{% url 'chat:session_list' %}?current={{ current.pk|default:'' }}">
+  {% with current_id=current.pk %}{% include "chat/partials/session_list.html" %}{% endwith %}
+</div>

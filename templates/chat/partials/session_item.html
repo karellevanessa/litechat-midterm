@@ -1,0 +1,13 @@
+<div class="session-item {% if s.pk == current_id %}active{% endif %}" id="session-{{ s.pk }}">
+  <a class="session-link" href="{% url 'chat:session' s.pk %}">
+    <span class="session-title">{{ s }}</span>
+    <span class="session-date">{{ s.created_at|date:"M j, Y" }}</span>
+  </a>
+  <span class="session-actions">
+    <button class="icon-btn" title="Rename" aria-label="Rename"
+            hx-get="{% url 'chat:session_rename' s.pk %}?current={{ current_id|default:'' }}" hx-target="#session-{{ s.pk }}" hx-swap="outerHTML">&#9998;</button>
+    <button class="icon-btn" title="Delete" aria-label="Delete"
+            hx-post="{% url 'chat:session_delete' s.pk %}?current={{ current_id|default:'' }}" hx-target="#session-{{ s.pk }}" hx-swap="outerHTML"
+            hx-confirm="Delete this session? This cannot be undone.">&#128465;</button>
+  </span>
+</div>

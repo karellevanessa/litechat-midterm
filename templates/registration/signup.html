@@ -1,0 +1,15 @@
+{% extends "registration/auth_base.html" %}
+{% block title %}Sign up · LiteChat{% endblock %}
+{% block auth %}
+<h1>Create your account</h1>
+<form method="post" class="form">
+  {% csrf_token %}
+  {% for field in form %}
+    <label>{{ field.label }} {{ field }}</label>
+    {% for e in field.errors %}<div class="error">{{ e }}</div>{% endfor %}
+  {% endfor %}
+  {% if form.non_field_errors %}<div class="error">{{ form.non_field_errors|join:" " }}</div>{% endif %}
+  <button class="btn primary" type="submit">Sign up</button>
+</form>
+<p class="muted">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+{% endblock %}

@@ -1,0 +1,5 @@
+<button type="button" class="toggle {% if current.include_memories %}on{% endif %}" id="memory-toggle"
+        hx-post="{% url 'chat:session_toggle_memories' current.pk %}" hx-swap="outerHTML"
+        role="switch" aria-checked="{{ current.include_memories|yesno:'true,false' }}">
+  Include Memories <span class="switch"></span>
+</button>

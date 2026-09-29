@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static billing_tags %}
+{% block title %}{{ current }} · LiteChat{% endblock %}
+{% block sidebar_extra %}{% include "chat/sidebar.html" %}{% endblock %}
+{% block main %}
+<div class="chat" id="chat" data-send-url="{% url 'chat:send' current.pk %}">
+  <div class="messages" id="messages">
+    {% if not chat_messages %}
+      <div class="empty-state" id="chat-empty"><h2>Hello! How can I help?</h2></div>
+    {% endif %}
+    {% for m in chat_messages %}
+      {% if m.role == "user" %}
+        <div class="msg user"><div class="bubble">{{ m.content|linebreaksbr }}</div></div>
+      {% else %}
+        <div class="msg assistant">
+          <div class="bubble">
+            <button type="button" class="copy-btn" title="Copy" aria-label="Copy">&#128203;</button>
+            <div class="md">{{ m.content }}</div>
+            {% if not m.content %}<p class="muted"><em>The model returned no text.</em></p>{% endif %}
+          </div>
+          <div class="meta">{{ m.ai_model.display_name|default:"Deleted model" }} · {{ m.input_tokens }} in / {{ m.output_tokens }} out tokens · {{ m.cost_micros|usd }}</div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+  <form class="composer" id="composer">
+    <div class="toolbar">
+      <span class="muted">Model</span>
+      {% include "chat/partials/model_button.html" %}
+      {% include "chat/partials/memory_toggle.html" %}
+    </div>
+    <div class="input-row">
+      <textarea name="content" id="content" rows="1" placeholder="Type a message..." required></textarea>
+      <button class="btn primary send-btn" id="send-btn" type="submit" aria-label="Send">&#10148;</button>
+    </div>
+  </form>
+</div>
+{% include "chat/partials/model_picker.html" %}
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/chat.js' %}"></script>{% endblock %}
