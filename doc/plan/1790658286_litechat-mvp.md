@@ -73,14 +73,16 @@ Commit: `feat(billing): admin for prices, markup and credit top-ups`
 ## Phase 4 — Provider adapters
 Commit: `feat(chat): add streaming adapters for OpenAI, Anthropic and Google proxy`
 
-- [ ] `chat/providers.py`: `stream_chat(ai_model, system, messages) -> Iterator[Delta | Usage]`. One adapter per provider (paths, headers, bodies from study 4.1–4.3). `httpx` stream, timeout ~120 s.
-- [ ] OpenAI: `stream_options.include_usage`; ignore `reasoning_content`.
-- [ ] Anthropic: `max_tokens=4096`; only `text_delta`; input tokens from `message_start`, output from `message_delta`; roles map (`assistant`).
-- [ ] Google: `:streamGenerateContent?alt=sse`; role `model` for assistant; `systemInstruction`; usage from last chunk.
-- [ ] Raise `ProviderError` with a user-safe message on non-200 (401/400/5xx/timeout).
-- [ ] Management command `proxy_smoke`: one short live call per active model, print text and usage.
-- [ ] Tests with recorded SSE fixtures for all three, incl. "no text returned" and error status.
-- [ ] Run `proxy_smoke` once against the live proxy.
+- [x] `chat/providers.py`: `stream_chat(ai_model, system, messages) -> Iterator[Delta | Usage]`. One adapter per provider (paths, headers, bodies from study 4.1–4.3). `httpx` stream, timeout ~120 s.
+- [x] OpenAI: `stream_options.include_usage`; ignore `reasoning_content`.
+- [x] Anthropic: `max_tokens=4096`; only `text_delta`; input tokens from `message_start`, output from `message_delta`; roles map (`assistant`).
+- [x] Google: `:streamGenerateContent?alt=sse`; role `model` for assistant; `systemInstruction`; usage from last chunk.
+- [x] Raise `ProviderError` with a user-safe message on non-200 (401/400/5xx/timeout).
+- [x] Management command `proxy_smoke`: one short live call per active model, print text and usage.
+- [x] Tests with recorded SSE fixtures for all three, incl. "no text returned" and error status.
+- [x] Run `proxy_smoke` once against the live proxy.
+  - Live result (2026-09-29): Luna in=212 out=73 $0.0003; Haiku in=211 out=13 $0.0004; Gemini in=212 out=173 $0.0007.
+  - Note: a stream with no usage raises `ProviderError` (so it is not charged). Tests live in `chat/tests/`.
 
 ## Phase 5 — Signup, login, layout
 Commit: `feat(accounts): email signup and login with starting credit`
