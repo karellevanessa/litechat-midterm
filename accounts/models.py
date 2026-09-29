@@ -33,6 +33,9 @@ class User(AbstractUser):
     username = None
     email = models.EmailField("email address", unique=True)
     display_name = models.CharField(max_length=150, blank=True)
+    global_system_prompt = models.TextField(
+        blank=True, max_length=4000, help_text="Instruction added to every chat session."
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

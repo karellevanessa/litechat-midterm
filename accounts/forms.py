@@ -35,3 +35,14 @@ class EmailAuthenticationForm(AuthenticationForm):
         if self.cleaned_data.get("username"):
             self.cleaned_data["username"] = self.cleaned_data["username"].strip().lower()
         return super().clean()
+
+
+class SystemPromptForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ("global_system_prompt",)
+        widgets = {
+            "global_system_prompt": forms.Textarea(
+                attrs={"rows": 5, "placeholder": "e.g., You are a helpful assistant that..."}
+            )
+        }

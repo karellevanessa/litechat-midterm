@@ -13,6 +13,16 @@
     </dl>
   </section>
 
+  <section class="card">
+    <h2>Global System Prompt</h2>
+    <p class="muted">This instruction will apply to all chat sessions.</p>
+    <form method="post" action="{% url 'save_system_prompt' %}" class="form">
+      {% csrf_token %}
+      {{ prompt_form.global_system_prompt }}
+      <div><button class="btn primary" type="submit">Save Prompt</button></div>
+    </form>
+  </section>
+
   <h2 class="section-title">Billing Accounts</h2>
   {% for row in accounts %}
   <section class="card billing-row">

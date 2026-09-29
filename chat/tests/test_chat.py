@@ -165,3 +165,18 @@ class SessionTests(ChatTestCase):
         self.client.force_login(admin)
         self.client.get("/")
         self.assertEqual(admin.billing_accounts.count(), 1)
+
+
+class SystemPromptSendTests(ChatTestCase):
+    def test_global_system_prompt_is_sent(self):
+        self.user.global_system_prompt = "Answer in French."
+        self.user.save()
+        captured = {}
+
+        def stream(ai_model, system, messages, transport=None):
+            captured["system"] = system
+            yield Usage(1, 1)
+
+        with mock.patch("chat.views.stream_chat", stream):
+            read_lines(self.client.post(self.send_url, {"content": "Hi"}))
+        self.assertEqual(captured["system"], "Answer in French.")

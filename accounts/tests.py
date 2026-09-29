@@ -79,3 +79,16 @@ class ProfileTests(TestCase):
     def test_profile_requires_login(self):
         self.client.post("/accounts/logout/")
         self.assertRedirects(self.client.get("/accounts/profile/"), "/accounts/login/?next=/accounts/profile/")
+
+
+class SystemPromptTests(TestCase):
+    def setUp(self):
+        self.client.post("/accounts/signup/", SIGNUP)
+        self.user = User.objects.get()
+
+    def test_save_prompt(self):
+        response = self.client.post("/accounts/profile/system-prompt/", {"global_system_prompt": "Answer in French."})
+        self.assertRedirects(response, "/accounts/profile/")
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.global_system_prompt, "Answer in French.")
+        self.assertContains(self.client.get("/accounts/profile/"), "Answer in French.")

@@ -129,8 +129,8 @@ def _line(**payload):
 
 
 def build_system_prompt(user):
-    """System text sent with every request. Extended by the profile features."""
-    return ""
+    """System text sent with every request, built from the user's profile settings."""
+    return user.global_system_prompt.strip()
 
 
 @login_required

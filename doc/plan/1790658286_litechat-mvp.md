@@ -129,7 +129,10 @@ Commit: `docs: README run guide and doc sync for MVP`
 
 ## Phase 9 — Nice-to-have (only if time remains, one commit each)
 
-- [ ] `feat(accounts): global system prompt` — profile textarea, prepended as system text.
+> Order change (2026-09-29): Phases 1–7 finished early, so Phase 9 runs **before** Phase 8. The README and rendezvous summary then describe the final state.
+
+
+- [x] `feat(accounts): global system prompt` — profile textarea, prepended as system text.
 - [ ] `feat(accounts): manual memories with include toggle` — `MemoryItem(category, content)`, add/delete on profile, "Include Memories" toggle on chat adds them to system text.
 - [x] `feat(chat): copy button on replies` (done in Phase 6).
 
