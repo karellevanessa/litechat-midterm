@@ -142,6 +142,8 @@ class SessionTests(ChatTestCase):
         self.assertContains(response, "Gemini 3.8 Flash")
         self.assertContains(response, "[Personal] U")
         self.assertContains(response, "AI can make mistakes. Check the information it generates.")
+        self.assertContains(response, "katex.min.js")
+        self.assertContains(response, "js/render.js")
 
     def test_rename(self):
         response = self.client.post(f"/sessions/{self.session.pk}/rename/", {"title": "Trip plan"})
