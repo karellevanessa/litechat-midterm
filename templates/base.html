@@ -20,9 +20,6 @@
   <aside class="sidebar">
     <div class="brand-row">
       <a class="brand" href="{% url 'chat:index' %}">{% include "partials/logo.html" %}<span>Petal</span></a>
-      <form method="post" action="{% url 'logout' %}">{% csrf_token %}
-        <button class="icon-btn" title="Log out" aria-label="Log out">&#x21E5;</button>
-      </form>
     </div>
     <nav>
       <div class="nav-label">Apps</div>
@@ -37,6 +34,25 @@
       <strong id="balance">{{ balance_display|default:"$0.00" }}</strong>
     </div>
     {% block sidebar_extra %}{% endblock %}
+    <details class="account-menu" id="account-menu">
+      <summary>
+        <span class="avatar" aria-hidden="true">{{ user.display_name|default:user.email|first|upper }}</span>
+        <span class="account-id">
+          <strong>{{ user.display_name|default:"Student" }}</strong>
+          <span class="muted small">{{ user.email }}</span>
+        </span>
+        <span class="caret" aria-hidden="true">&#9662;</span>
+      </summary>
+      <div class="account-actions">
+        <a href="{% url 'profile' %}">My profile</a>
+        <form method="post" action="{% url 'switch_account' %}">{% csrf_token %}
+          <button type="submit">Switch account</button>
+        </form>
+        <form method="post" action="{% url 'logout' %}">{% csrf_token %}
+          <button type="submit" class="danger">Log out</button>
+        </form>
+      </div>
+    </details>
   </aside>
   <main class="main">
     {% if messages %}<div class="flash">{% for m in messages %}<div class="flash-item {{ m.tags }}">{{ m }}</div>{% endfor %}</div>{% endif %}

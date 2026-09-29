@@ -1,4 +1,4 @@
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.contrib import messages
@@ -24,6 +24,16 @@ def signup(request):
         login(request, user, backend="django.contrib.auth.backends.ModelBackend")
         return redirect("chat:index")
     return render(request, "registration/signup.html", {"form": form})
+
+
+@require_POST
+def switch_account(request):
+    """Log out, then open the login page so another account can sign in."""
+    email = request.user.email if request.user.is_authenticated else ""
+    logout(request)
+    if email:
+        messages.info(request, f"You logged out of {email}. Log in with another account.")
+    return redirect("login")
 
 
 @login_required
