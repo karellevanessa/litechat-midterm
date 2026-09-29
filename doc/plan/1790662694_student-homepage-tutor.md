@@ -1,6 +1,6 @@
 # Plan: Student homepage and Tutor mode for Petal
 
-- Status: **rendezvous** (2026-09-29) — all phases done on `feat/student-homepage-tutor`, waiting for human approval to merge. The human ran `migrate` and `test` (**71 tests OK**) while the agent's auto-mode shell check was down; the rest was done after switching out of auto mode.
+- Status: **done** — merged into `main` on 2026-09-29 (merge commit `1ffcfef`). The human ran `migrate` and `test` (**71 tests OK**) while the agent's auto-mode shell check was down; the rest was done after switching out of auto mode.
   - Commits were made by a helper script that splits `chat/urls.py` and `chat/tests/test_chat.py` between Phase 1 and Phase 2, so each commit is self-consistent.
 - Source study: `doc/study/1790662406_petal-student-positioning.md` (read sections 2, 5 and 7 first)
 - Branch: `feat/student-homepage-tutor` (create from `main`)
