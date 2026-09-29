@@ -38,7 +38,10 @@ input[type=text], input[type=email], input[type=password], textarea, select {
 
 /* App shell */
 .app { display: flex; height: 100vh; }
-.sidebar { width: 280px; flex-shrink: 0; background: var(--panel); border-right: 1px solid var(--border); padding: 20px 16px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+/* Only the session list scrolls, so the account menu stays visible at the bottom. */
+.sidebar { width: 280px; flex-shrink: 0; background: var(--panel); border-right: 1px solid var(--border); padding: 20px 16px; display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
+.sidebar > * { flex-shrink: 0; }
+.sidebar > .session-list { flex: 0 1 auto; min-height: 60px; overflow-y: auto; }
 .brand-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
 .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 18px; color: var(--text); text-decoration: none; }
 .logo { width: 30px; height: 30px; }
@@ -57,7 +60,8 @@ input[type=text], input[type=email], input[type=password], textarea, select {
 
 @media (max-width: 760px) {
   .app { flex-direction: column; height: auto; min-height: 100vh; }
-  .sidebar { width: 100%; border-right: 0; border-bottom: 1px solid var(--border); max-height: 45vh; }
+  .sidebar { width: 100%; border-right: 0; border-bottom: 1px solid var(--border); max-height: 45vh; overflow-y: auto; }
+  .sidebar > .session-list { overflow: visible; }
 }
 
 /* Sessions */
@@ -161,6 +165,36 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--b
 /* Math (KaTeX) */
 .math-display { overflow-x: auto; overflow-y: hidden; margin: 12px 0; }
 .md .katex { font-size: 1.08em; }
+
+/* Student persona: chat welcome, starters, Tutor help */
+.study-welcome { max-width: 760px; }
+.study-welcome h2 { font-size: 26px; margin-bottom: 8px; }
+.starter-chips { margin: 20px 0 12px; text-align: left; }
+.chip.starter { font: inherit; cursor: pointer; text-align: left; }
+.nav-button { width: 100%; border: 0; background: none; font: inherit; text-align: left; cursor: pointer; }
+.help-btn { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border); background: var(--panel); color: var(--brand); font-weight: 700; cursor: pointer; padding: 0; }
+.help-btn:hover { border-color: var(--brand); }
+.help-dialog h3 { font-size: 15px; margin: 18px 0 6px; }
+.help-dialog ul { margin: 0; padding-left: 20px; line-height: 1.55; }
+.help-dialog p { line-height: 1.55; margin: 0 0 8px; }
+
+/* Account menu (bottom of sidebar) */
+.account-menu { margin-top: auto; border-top: 1px solid var(--border); padding-top: 10px; position: relative; }
+.account-menu summary { list-style: none; display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 10px; cursor: pointer; }
+.account-menu summary::-webkit-details-marker { display: none; }
+.account-menu summary:hover, .account-menu[open] summary { background: var(--brand-softer); }
+.avatar { width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; background: var(--brand); color: #fff; font-weight: 700; display: grid; place-items: center; }
+.account-id { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.account-id strong, .account-id .small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.caret { color: var(--muted); font-size: 12px; transition: transform .15s; }
+.account-menu[open] .caret { transform: rotate(180deg); }
+.account-actions { position: absolute; bottom: calc(100% + 6px); left: 0; right: 0; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 8px 24px rgba(60, 20, 40, .12); padding: 6px; display: flex; flex-direction: column; z-index: 10; }
+.account-actions form { margin: 0; }
+.account-actions a, .account-actions button { display: block; width: 100%; text-align: left; padding: 9px 12px; border: 0; background: none; border-radius: 8px; font: inherit; color: var(--text); text-decoration: none; cursor: pointer; }
+.account-actions a:hover, .account-actions button:hover { background: var(--brand-softer); }
+.account-actions .danger { color: var(--danger); }
+.auth-card .flash-item { margin-bottom: 12px; }
+@media (max-width: 760px) { .account-actions { position: static; box-shadow: none; margin-top: 6px; } }
 
 /* Homepage */
 .home { max-width: 1040px; margin: 0 auto; padding: 0 24px 40px; }

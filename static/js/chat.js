@@ -146,6 +146,13 @@
   input.addEventListener("input", autoGrow);
 
   messages.addEventListener("click", function (e) {
+    const starter = e.target.closest(".starter");
+    if (starter) {
+      input.value = starter.dataset.question;
+      autoGrow();
+      input.focus();
+      return;
+    }
     const btn = e.target.closest(".copy-btn");
     if (!btn) return;
     const md = btn.parentElement.querySelector(".md");

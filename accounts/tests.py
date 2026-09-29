@@ -51,6 +51,34 @@ class LoginTests(TestCase):
         self.assertRedirects(self.client.get("/chat/"), "/accounts/login/?next=/chat/")
 
 
+class AccountMenuTests(TestCase):
+    def setUp(self):
+        self.client.post("/accounts/signup/", SIGNUP)
+
+    def test_menu_shows_identity_and_actions(self):
+        response = self.client.get("/accounts/profile/")
+        self.assertContains(response, 'id="account-menu"')
+        self.assertContains(response, "karelle@example.com")
+        self.assertContains(response, "Switch account")
+        self.assertContains(response, "Log out")
+
+    def test_switch_account_logs_out_and_opens_login(self):
+        response = self.client.post("/accounts/switch/", follow=True)
+        self.assertRedirects(response, "/accounts/login/")
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
+        self.assertContains(response, "You logged out of karelle@example.com. Log in with another account.")
+        self.assertRedirects(self.client.get("/chat/"), "/accounts/login/?next=/chat/")
+
+    def test_switch_to_second_account(self):
+        User.objects.create_user(email="ben@example.com", password="a-strong-pass-42")
+        self.client.post("/accounts/switch/")
+        self.client.post("/accounts/login/", {"username": "ben@example.com", "password": "a-strong-pass-42"})
+        self.assertContains(self.client.get("/accounts/profile/"), "ben@example.com")
+
+    def test_switch_needs_post(self):
+        self.assertEqual(self.client.get("/accounts/switch/").status_code, 405)
+
+
 class ProfileTests(TestCase):
     def setUp(self):
         self.client.post("/accounts/signup/", SIGNUP)

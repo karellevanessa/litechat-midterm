@@ -15,7 +15,7 @@ class ChatSession(models.Model):
         ordering = ["-updated_at", "-id"]
 
     def __str__(self):
-        return self.title or "New session"
+        return self.title or "New study session"
 
 
 class Message(models.Model):

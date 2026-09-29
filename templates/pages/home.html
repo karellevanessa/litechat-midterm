@@ -38,14 +38,9 @@
   <section class="home-section">
     <h2>Questions students ask</h2>
     <div class="chips">
-      <a class="chip" href="{% url 'signup' %}"><span>Calculus</span>Why is the derivative of x² equal to 2x?</a>
-      <a class="chip" href="{% url 'signup' %}"><span>Algebra</span>How do I solve 2x + 5 = 17 step by step?</a>
-      <a class="chip" href="{% url 'signup' %}"><span>Chemistry</span>How do I balance H₂ + O₂ → H₂O?</a>
-      <a class="chip" href="{% url 'signup' %}"><span>Physics</span>What does Newton's second law really mean?</a>
-      <a class="chip" href="{% url 'signup' %}"><span>Writing</span>How can I make my thesis statement stronger?</a>
-      <a class="chip" href="{% url 'signup' %}"><span>Programming</span>Why does my Python loop never stop?</a>
-      <a class="chip" href="{% url 'signup' %}"><span>History</span>What were the main causes of World War I?</a>
-      <a class="chip" href="{% url 'signup' %}"><span>Statistics</span>What is the difference between mean and median?</a>
+      {% for subject, question in starters %}
+      <a class="chip" href="{% url 'signup' %}"><span>{{ subject }}</span>{{ question }}</a>
+      {% endfor %}
     </div>
   </section>
 

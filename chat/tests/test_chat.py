@@ -145,6 +145,38 @@ class SessionTests(ChatTestCase):
         self.assertContains(response, "AI can make mistakes. Check the information it generates.")
         self.assertContains(response, "katex.min.js")
         self.assertContains(response, "js/render.js")
+        # With messages, the student welcome and starters are hidden.
+        self.assertNotContains(response, "What are you studying today?")
+
+
+class StudentPersonaTests(ChatTestCase):
+    def test_empty_session_greets_student_with_starters(self):
+        response = self.client.get(f"/sessions/{self.session.pk}/")
+        self.assertContains(response, "Hi U! What are you studying today?")
+        self.assertContains(response, 'placeholder="Ask about your coursework…"')
+        from django.utils.html import escape
+
+        from chat.starters import STARTER_QUESTIONS
+
+        for subject, question in STARTER_QUESTIONS:
+            self.assertContains(response, f'data-question="{escape(question)}"')
+
+    def test_untitled_session_is_called_study_session(self):
+        self.assertEqual(str(self.session), "New study session")
+        self.assertContains(self.client.get(f"/sessions/{self.session.pk}/"), "Study sessions")
+
+    def test_tutor_explainer_is_in_the_nav_and_next_to_the_switch(self):
+        response = self.client.get(f"/sessions/{self.session.pk}/")
+        self.assertContains(response, "What is Tutor mode?", count=4)  # nav item, "?" title + label, dialog title
+        self.assertContains(response, 'id="tutor-help"')
+        # The explainer is on every app page, not only in chat.
+        self.assertContains(self.client.get("/accounts/profile/"), 'id="tutor-help"')
+
+    def test_no_sessions_page_invites_to_study(self):
+        ChatSession.objects.all().delete()
+        response = self.client.get("/chat/")
+        self.assertContains(response, "Ready to study, U?")
+        self.assertContains(response, "Start a study session")
 
     def test_rename(self):
         response = self.client.post(f"/sessions/{self.session.pk}/rename/", {"title": "Trip plan"})
