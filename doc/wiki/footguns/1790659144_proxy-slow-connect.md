@@ -13,3 +13,19 @@ Found on 2026-09-29 while testing streaming under `runserver`.
 - Keep the connect timeout generous (`chat/providers.py` uses 30 s).
 - A timeout is a `ProviderError`, so the user sees a clear message and is **not** charged.
 - When a live test fails, measure first: `curl -w "connect=%{time_connect} total=%{time_total}\n" ...` before debugging our code.
+
+## Second measurement (same day, later)
+
+The human reported "The model took too long to answer" for a calculus question on Gemini and suspected the question. It was not the question. Five direct `curl` calls with the **same** question to `/google/...`:
+
+| Try | Connect | Result |
+|---|---|---|
+| 1 | 0.3 s | 200, done in 2.8 s |
+| 2 | 19.3 s | 200, done in 22.3 s |
+| 3 | 0.2 s | 200, done in 2.0 s |
+| 4 | never | curl gave up after 75 s |
+| 5 | 3.9 s | 200, done in 20.5 s |
+
+Through the app at the same time, GPT and Claude answered the calculus question in < 6 s. Gemini failed once after 66 s ("Could not reach the model provider").
+
+Lesson: when one question fails and another works, suspect the proxy's connect time before the prompt content. A connection that never opens has not reached the model, so a retry is safe and cannot double-charge.
