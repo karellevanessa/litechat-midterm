@@ -1,3 +1,6 @@
 Django>=6.1,<6.2
 httpx>=0.28,<1
 python-dotenv>=1.0,<2
+whitenoise>=6.9,<7
+dj-database-url>=2.3,<4
+psycopg[binary]>=3.2,<4
