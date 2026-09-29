@@ -1,5 +1,5 @@
 # TODO
 
-- Active plan doc: none yet
-- Phase: study
-- Next: pick the tech stack, then study Litechat core functionality and the proxy API into `doc/study/`.
+- Active plan doc: `doc/plan/1790658286_litechat-mvp.md`
+- Phase: plan (waiting for human approval)
+- Next: on approval, "execute plan" from Phase 1 on branch `feat/litechat-mvp`.
