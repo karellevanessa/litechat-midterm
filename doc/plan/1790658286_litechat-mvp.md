@@ -1,6 +1,6 @@
 # Plan: Litechat MVP (metered multi-provider chat)
 
-- Status: **rendezvous** — Phases 1–9 done on `feat/litechat-mvp`, waiting for human approval to merge
+- Status: **done** — merged into `main` on 2026-09-29 (merge commit `bebb547`)
 - Source study: `doc/study/1790658061_litechat-core.md` (read sections 4 and 5 before phase 4 and 6)
 - Brief: `doc/canonical/midterm_prompt.md`
 - Branch: `feat/litechat-mvp` (create from `main`)
