@@ -2,7 +2,7 @@
 
 A replica of the core of [Litechat](https://litechat.ai): **metered, pay-as-you-go access to LLMs from several providers**, for regular users who do not want a subscription.
 
-The app is branded **Petal** (pink theme) to set it apart from the original.
+The app is branded **Petal** (pink theme) and positioned as a **study helper for high-school and university students**: "Understand your coursework, one question at a time. Pay per question, not per month."
 
 - Brief: [`doc/canonical/midterm_prompt.md`](doc/canonical/midterm_prompt.md)
 - How the project was run (study → plan → execute): [`AGENTS.md`](AGENTS.md), [`doc/study/`](doc/study/), [`doc/plan/`](doc/plan/), [`doc/wiki/footguns/`](doc/wiki/footguns/)
@@ -17,6 +17,9 @@ The app is branded **Petal** (pink theme) to set it apart from the original.
 | Sessions: create, rename, delete | See every account's balance and full ledger |
 | Blocked with a clear message at $0 credit | |
 | Profile: available credit, usage history, global system prompt, memories | |
+| **Tutor mode** (on by default, per session): step-by-step explanations; full solution when asked. Replies are longer, so they cost a little more | |
+| Math shows as real formulas (KaTeX) | |
+| Public homepage at `/` for visitors; free credit and model list come from the database | |
 
 ### The metering loop (the core)
 
@@ -41,7 +44,8 @@ cp .env.example .env          # then paste the three proxy keys into .env
 .venv/bin/python manage.py runserver
 ```
 
-- App: http://127.0.0.1:8000/ (sign up as a normal user)
+- Homepage: http://127.0.0.1:8000/ (visitors; logged-in users go straight to the chat)
+- Chat: http://127.0.0.1:8000/chat/ (sign up as a normal user)
 - Admin: http://127.0.0.1:8000/admin/ (log in as the superuser)
 
 `.env` holds the secrets and is **never committed**:
@@ -62,7 +66,7 @@ cp .env.example .env          # then paste the three proxy keys into .env
 ## Tests
 
 ```bash
-.venv/bin/python manage.py test            # 55 tests, proxy mocked, no network
+.venv/bin/python manage.py test            # 71 tests, proxy mocked, no network
 .venv/bin/python manage.py proxy_smoke     # one live call per model (uses real proxy quota)
 ```
 
@@ -72,8 +76,9 @@ cp .env.example .env          # then paste the three proxy keys into .env
 |---|---|
 | `accounts/` | Email-login `User`, signup/login, profile, global system prompt, memories |
 | `billing/` | `AIModel`, `PricingSettings`, `BillingAccount`, `LedgerEntry`, cost/balance services, admin |
-| `chat/` | Sessions, messages, `providers.py` (one streaming adapter per provider), the metered `send` view |
-| `templates/`, `static/` | Server-rendered pages, HTMX, `static/js/chat.js` (streaming client) |
+| `chat/` | Sessions, messages, `providers.py` (one streaming adapter per provider, with connect retry), `prompts.py` (Tutor mode), the metered `send` view |
+| `pages/` | Public student homepage |
+| `templates/`, `static/` | Server-rendered pages, HTMX, `static/js/chat.js` (streaming client), `static/js/render.js` (Markdown + KaTeX) |
 
 ## Known limits
 
