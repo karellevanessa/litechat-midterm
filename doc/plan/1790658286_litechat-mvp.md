@@ -1,6 +1,6 @@
 # Plan: Litechat MVP (metered multi-provider chat)
 
-- Status: **ready for execution** (not started)
+- Status: **in progress** (branch `feat/litechat-mvp`)
 - Source study: `doc/study/1790658061_litechat-core.md` (read sections 4 and 5 before phase 4 and 6)
 - Brief: `doc/canonical/midterm_prompt.md`
 - Branch: `feat/litechat-mvp` (create from `main`)
@@ -39,12 +39,13 @@ None. All decisions are in the study, section 1 and section 8.
 ## Phase 1 — Project skeleton
 Commit: `build: scaffold Django project with custom email user model`
 
-- [ ] `git switch -c feat/litechat-mvp`
-- [ ] Create `.venv`, `requirements.txt` (`Django>=6.1,<6.2`, `httpx`, `python-dotenv`), install.
-- [ ] `django-admin startproject config .`; create apps `accounts`, `billing`, `chat`.
-- [ ] `config/settings.py`: load `.env`; read `SECRET_KEY` (fallback dev key only when `DEBUG`), `DEBUG`, proxy base URL and 3 keys. Add `SECRET_KEY=` and `DEBUG=` to `.env.example`.
-- [ ] `accounts.User(AbstractUser)` with `username = None`, `email` unique, `USERNAME_FIELD = "email"`, custom manager. `AUTH_USER_MODEL = "accounts.User"`.
-- [ ] `makemigrations`, `migrate`, `test` (0 tests OK). `runserver` shows the Django page.
+- [x] `git switch -c feat/litechat-mvp`
+- [x] Create `.venv`, `requirements.txt` (`Django>=6.1,<6.2`, `httpx`, `python-dotenv`), install.
+- [x] `django-admin startproject config .`; create apps `accounts`, `billing`, `chat`.
+- [x] `config/settings.py`: load `.env`; read `SECRET_KEY` (fallback dev key only when `DEBUG`), `DEBUG`, proxy base URL and 3 keys. Add `SECRET_KEY=` and `DEBUG=` to `.env.example`.
+- [x] `accounts.User(AbstractUser)` with `username = None`, `email` unique, `USERNAME_FIELD = "email"`, custom manager. `AUTH_USER_MODEL = "accounts.User"`.
+- [x] `makemigrations`, `migrate`, `test` (0 tests OK). `runserver` shows the Django page.
+  - Note: added `accounts/forms.py` so the admin add/change user pages work without a `username` field.
 
 ## Phase 2 — Billing core
 Commit: `feat(billing): add models, pricing, ledger and seed catalog`
