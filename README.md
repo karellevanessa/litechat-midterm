@@ -17,7 +17,9 @@ The app is branded **Petal** (pink theme) and positioned as a **study helper for
 | Sessions: create, rename, delete | See every account's balance and full ledger |
 | Blocked with a clear message at $0 credit | |
 | Profile: available credit, usage history, global system prompt, memories | |
-| **Tutor mode** (on by default, per session): step-by-step explanations; full solution when asked. Replies are longer, so they cost a little more | |
+| **Tutor mode** (on by default, per session): step-by-step explanations; full solution when asked. Replies are longer, so they cost a little more. "What is Tutor mode?" in the sidebar explains it | |
+| Study persona: a new session greets the student and offers one-click coursework questions | |
+| Account menu (bottom of sidebar): My profile, **Switch account**, Log out | |
 | Math shows as real formulas (KaTeX) | |
 | Public homepage at `/` for visitors; free credit and model list come from the database | |
 
@@ -66,7 +68,7 @@ cp .env.example .env          # then paste the three proxy keys into .env
 ## Tests
 
 ```bash
-.venv/bin/python manage.py test            # 71 tests, proxy mocked, no network
+.venv/bin/python manage.py test            # 79 tests, proxy mocked, no network
 .venv/bin/python manage.py proxy_smoke     # one live call per model (uses real proxy quota)
 ```
 
