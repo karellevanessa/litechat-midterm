@@ -20,6 +20,7 @@ from billing.services import (
 
 from .models import ChatSession, Message
 from .prompts import TUTOR_PROMPT
+from .starters import STARTER_QUESTIONS
 from .providers import Delta, ProviderError, Retry, stream_chat
 
 HISTORY_LIMIT = 20
@@ -50,6 +51,7 @@ def _chat_context(request, session=None):
         "current": session,
         "models_by_provider": models_by_provider,
         "billing_account": _account_for(request.user),
+        "starters": STARTER_QUESTIONS,
     }
 
 

@@ -6,7 +6,16 @@
 <div class="chat" id="chat" data-send-url="{% url 'chat:send' current.pk %}">
   <div class="messages" id="messages">
     {% if not chat_messages %}
-      <div class="empty-state" id="chat-empty"><h2>Hello! How can I help?</h2></div>
+      <div class="empty-state study-welcome" id="chat-empty">
+        <h2>Hi {{ user.display_name|default:"there" }}! What are you studying today?</h2>
+        <p class="muted">Ask about any class, from algebra to essays. With Tutor mode on, Petal explains step by step so you understand, not just copy.</p>
+        <div class="chips starter-chips">
+          {% for subject, question in starters %}
+          <button type="button" class="chip starter" data-question="{{ question }}"><span>{{ subject }}</span>{{ question }}</button>
+          {% endfor %}
+        </div>
+        <p class="muted small">Pick a question to try, or type your own below.</p>
+      </div>
     {% endif %}
     {% for m in chat_messages %}
       {% if m.role == "user" %}
@@ -29,9 +38,11 @@
       {% include "chat/partials/model_button.html" %}
       {% include "chat/partials/memory_toggle.html" %}
       {% include "chat/partials/tutor_toggle.html" %}
+      <button type="button" class="help-btn" onclick="document.getElementById('tutor-help').showModal()"
+              title="What is Tutor mode?" aria-label="What is Tutor mode?">?</button>
     </div>
     <div class="input-row">
-      <textarea name="content" id="content" rows="1" placeholder="Type a message..." required></textarea>
+      <textarea name="content" id="content" rows="1" placeholder="Ask about your coursework…" required></textarea>
       <button class="btn primary send-btn" id="send-btn" type="submit" aria-label="Send">&#10148;</button>
     </div>
     <p class="disclaimer">AI can make mistakes. Check the information it generates.</p>

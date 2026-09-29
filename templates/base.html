@@ -23,7 +23,8 @@
     </div>
     <nav>
       <div class="nav-label">Apps</div>
-      <a class="nav-item {% if request.resolver_match.app_name == 'chat' %}active{% endif %}" href="{% url 'chat:index' %}">&#128172; Chat</a>
+      <a class="nav-item {% if request.resolver_match.app_name == 'chat' %}active{% endif %}" href="{% url 'chat:index' %}">&#128172; Study chat</a>
+      <button type="button" class="nav-item nav-button" onclick="document.getElementById('tutor-help').showModal()">&#127891; What is Tutor mode?</button>
       <hr>
       <div class="nav-label">Account</div>
       <a class="nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{% url 'profile' %}">&#128100; My Profile</a>
@@ -59,6 +60,7 @@
     {% block main %}{% endblock %}
   </main>
 </div>
+{% include "partials/tutor_help.html" %}
 {% endblock %}
 {% block scripts %}{% endblock %}
 </body>

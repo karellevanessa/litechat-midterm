@@ -38,7 +38,10 @@ input[type=text], input[type=email], input[type=password], textarea, select {
 
 /* App shell */
 .app { display: flex; height: 100vh; }
-.sidebar { width: 280px; flex-shrink: 0; background: var(--panel); border-right: 1px solid var(--border); padding: 20px 16px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+/* Only the session list scrolls, so the account menu stays visible at the bottom. */
+.sidebar { width: 280px; flex-shrink: 0; background: var(--panel); border-right: 1px solid var(--border); padding: 20px 16px; display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
+.sidebar > * { flex-shrink: 0; }
+.sidebar > .session-list { flex: 0 1 auto; min-height: 60px; overflow-y: auto; }
 .brand-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
 .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 18px; color: var(--text); text-decoration: none; }
 .logo { width: 30px; height: 30px; }
@@ -57,7 +60,8 @@ input[type=text], input[type=email], input[type=password], textarea, select {
 
 @media (max-width: 760px) {
   .app { flex-direction: column; height: auto; min-height: 100vh; }
-  .sidebar { width: 100%; border-right: 0; border-bottom: 1px solid var(--border); max-height: 45vh; }
+  .sidebar { width: 100%; border-right: 0; border-bottom: 1px solid var(--border); max-height: 45vh; overflow-y: auto; }
+  .sidebar > .session-list { overflow: visible; }
 }
 
 /* Sessions */
@@ -161,6 +165,18 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--b
 /* Math (KaTeX) */
 .math-display { overflow-x: auto; overflow-y: hidden; margin: 12px 0; }
 .md .katex { font-size: 1.08em; }
+
+/* Student persona: chat welcome, starters, Tutor help */
+.study-welcome { max-width: 760px; }
+.study-welcome h2 { font-size: 26px; margin-bottom: 8px; }
+.starter-chips { margin: 20px 0 12px; text-align: left; }
+.chip.starter { font: inherit; cursor: pointer; text-align: left; }
+.nav-button { width: 100%; border: 0; background: none; font: inherit; text-align: left; cursor: pointer; }
+.help-btn { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border); background: var(--panel); color: var(--brand); font-weight: 700; cursor: pointer; padding: 0; }
+.help-btn:hover { border-color: var(--brand); }
+.help-dialog h3 { font-size: 15px; margin: 18px 0 6px; }
+.help-dialog ul { margin: 0; padding-left: 20px; line-height: 1.55; }
+.help-dialog p { line-height: 1.55; margin: 0 0 8px; }
 
 /* Account menu (bottom of sidebar) */
 .account-menu { margin-top: auto; border-top: 1px solid var(--border); padding-top: 10px; position: relative; }
