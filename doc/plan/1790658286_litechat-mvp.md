@@ -50,13 +50,15 @@ Commit: `build: scaffold Django project with custom email user model`
 ## Phase 2 — Billing core
 Commit: `feat(billing): add models, pricing, ledger and seed catalog`
 
-- [ ] Models: `BillingAccount(owner FK User, name, status, created_at)`, `LedgerEntry(account, amount_micros, kind[grant|topup|charge|adjustment], message FK nullable, note, created_by nullable, created_at)`, `AIModel(provider[openai|anthropic|google], model_id, display_name, description, tier[value|standard|premium], input_price_micros, output_price_micros, is_active, sort_order)`, `PricingSettings` singleton (`markup_percent=50`, `signup_grant_micros=2_000_000`).
-- [ ] Data migration seeds the 3 models (study 5.3) and the settings row.
+- [x] Models: `BillingAccount(owner FK User, name, status, created_at)`, `LedgerEntry(account, amount_micros, kind[grant|topup|charge|adjustment], message FK nullable, note, created_by nullable, created_at)`, `AIModel(provider[openai|anthropic|google], model_id, display_name, description, tier[value|standard|premium], input_price_micros, output_price_micros, is_active, sort_order)`, `PricingSettings` singleton (`markup_percent=50`, `signup_grant_micros=2_000_000`).
+- [x] Data migration seeds the 3 models (study 5.3) and the settings row.
   - `openai` / `gpt-5.6-luna` / "GPT-5.6 Luna" / value / 250_000 / 2_000_000
   - `anthropic` / `claude-haiku-4-5-20251001` / "Claude Haiku 4.5" / value / 1_000_000 / 5_000_000
   - `google` / `gemini-3.8-flash` / "Gemini 3.8 Flash" / value / 300_000 / 2_500_000
-- [ ] `billing/services.py`: `get_balance(account)`, `compute_cost(model, in_tok, out_tok)`, `grant_signup(account)`, `charge(account, cost, message)`, `format_usd(micros)`.
-- [ ] Tests: cost math incl. ceil rounding and markup change; balance = sum; format.
+- [x] `billing/services.py`: `get_balance(account)`, `compute_cost(model, in_tok, out_tok)`, `grant_signup(account)`, `charge(account, cost, message)`, `format_usd(micros)`.
+- [x] Tests: cost math incl. ceil rounding and markup change; balance = sum; format.
+  - Note: `LedgerEntry.message` FK is **deferred to Phase 6**, because `chat.Message` does not exist yet.
+  - Note: `grant_signup` became `open_personal_account(user)` (creates account + grant in one transaction). Also added `top_up()` and `personal_account_for()`.
 
 ## Phase 3 — Admin
 Commit: `feat(billing): admin for prices, markup and credit top-ups`
@@ -90,6 +92,7 @@ Commit: `feat(accounts): email signup and login with starting credit`
 ## Phase 6 — Sessions and chat streaming (the core loop)
 Commit: `feat(chat): sessions and metered streaming chat`
 
+- [ ] Add `LedgerEntry.message` FK (nullable, SET_NULL) to `chat.Message` (deferred from Phase 2).
 - [ ] Models: `ChatSession(user, title, ai_model, created_at, updated_at)`, `Message(session, role, content, ai_model nullable, input_tokens, output_tokens, cost_micros, created_at)`.
 - [ ] Sidebar session list (title + date, newest first). HTMX: new, rename inline, delete with confirm. Users see only their own sessions (404 otherwise).
 - [ ] Chat page: message list (Markdown rendered), model picker, balance, input box, send button.
