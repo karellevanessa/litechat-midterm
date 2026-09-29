@@ -15,6 +15,9 @@ Found on 2026-09-29 when the first Vercel deployment showed `DisallowedHost at /
 
 ## Other things to know
 
+- Vercel **imports `config/settings.py` during the build** (to detect Django). So every variable that settings need (`SECRET_KEY`, `DATABASE_URL`) must exist **before** the build, not only at run time. The first preview build failed with our own "Set DATABASE_URL on Vercel" error because it ran before Neon was connected.
+- `VERCEL_PROJECT_PRODUCTION_URL` holds only **one** production domain. After renaming the domain (here to `petal-karelle.vercel.app`), both names are also set explicitly in the `ALLOWED_HOSTS` and `CSRF_TRUSTED_ORIGINS` env vars on Vercel.
+
 - Vercel redeploys on **every push**, including feature branches (preview deployments). A branch with a new migration will run against the same database as production if preview uses the same `DATABASE_URL`, so migrate before merging.
 - Vercel used **Python 3.12** (no `.python-version`), while local development used 3.14. Django 6.1 supports both.
 - The superuser from local development does not exist in the cloud database; create one with `createsuperuser` against the cloud `DATABASE_URL`.
