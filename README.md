@@ -82,7 +82,7 @@ Vercel builds every push; `main` goes to production. See [`doc/wiki/footguns/179
 ## Tests
 
 ```bash
-.venv/bin/python manage.py test            # 79 tests, proxy mocked, no network
+.venv/bin/python manage.py test            # 82 tests, proxy mocked, no network
 .venv/bin/python manage.py proxy_smoke     # one live call per model (uses real proxy quota)
 ```
 

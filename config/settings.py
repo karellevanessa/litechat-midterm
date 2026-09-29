@@ -116,8 +116,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # DATABASE_URL (e.g. Neon Postgres on Vercel) wins; local development falls back to SQLite.
 # conn_max_age=0: serverless functions should not hold connections open between requests.
+# An empty DATABASE_URL (as in .env.example) means "not set", not "no database".
 DATABASES = {
-    "default": dj_database_url.config(default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}", conn_max_age=0)
+    "default": dj_database_url.parse(
+        os.environ.get("DATABASE_URL") or f"sqlite:///{BASE_DIR / 'db.sqlite3'}", conn_max_age=0
+    )
 }
 if ON_VERCEL and DATABASES["default"]["ENGINE"].endswith("sqlite3"):
     raise ImproperlyConfigured("Set DATABASE_URL on Vercel: SQLite does not persist there.")
