@@ -1,6 +1,6 @@
 # Plan: Litechat MVP (metered multi-provider chat)
 
-- Status: **in progress** (branch `feat/litechat-mvp`)
+- Status: **rendezvous** — Phases 1–9 done on `feat/litechat-mvp`, waiting for human approval to merge
 - Source study: `doc/study/1790658061_litechat-core.md` (read sections 4 and 5 before phase 4 and 6)
 - Brief: `doc/canonical/midterm_prompt.md`
 - Branch: `feat/litechat-mvp` (create from `main`)
@@ -123,9 +123,11 @@ Commit: `feat(accounts): profile page with billing account and usage history`
 ## Phase 8 — Rendezvous prep (must)
 Commit: `docs: README run guide and doc sync for MVP`
 
-- [ ] README: what it is, setup (`venv`, `pip install`, `.env`, `migrate`, `createsuperuser`, `runserver`), how to top up, how to run tests and `proxy_smoke`.
-- [ ] Definition of Done check (AGENTS.md): migrations applied, no debug prints, tests pass.
-- [ ] Key scan of full history. Update `TODO.md`. Stop and summarize for the human. **Do not merge without approval.**
+- [x] README: what it is, setup (`venv`, `pip install`, `.env`, `migrate`, `createsuperuser`, `runserver`), how to top up, how to run tests and `proxy_smoke`.
+- [x] Definition of Done check (AGENTS.md): migrations applied, no debug prints, tests pass.
+- [x] Key scan of full history. Update `TODO.md`. Stop and summarize for the human. **Do not merge without approval.**
+  - Live end-to-end (2026-09-29, Claude Haiku): system prompt + memory used ("Your favourite colour is teal."), charged $0.0006, 402 at $0, access back after top-up.
+  - DoD: no pending migrations, no debug output, 55 tests pass, full-history key scan clean.
 
 ## Phase 9 — Nice-to-have (only if time remains, one commit each)
 
