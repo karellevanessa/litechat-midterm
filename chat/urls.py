@@ -5,7 +5,7 @@ from . import views
 app_name = "chat"
 
 urlpatterns = [
-    path("", views.index, name="index"),
+    path("chat/", views.index, name="index"),
     path("sessions/", views.session_list, name="session_list"),
     path("sessions/new/", views.session_new, name="session_new"),
     path("sessions/<int:pk>/", views.session_detail, name="session"),

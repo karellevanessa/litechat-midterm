@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "accounts",
     "billing",
     "chat",
+    "pages",
 ]
 
 MIDDLEWARE = [

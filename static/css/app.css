@@ -161,3 +161,37 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--b
 /* Math (KaTeX) */
 .math-display { overflow-x: auto; overflow-y: hidden; margin: 12px 0; }
 .md .katex { font-size: 1.08em; }
+
+/* Homepage */
+.home { max-width: 1040px; margin: 0 auto; padding: 0 24px 40px; }
+.home-nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; }
+.home-nav nav { display: flex; gap: 8px; }
+.home-nav .btn, .hero .btn { text-decoration: none; display: inline-block; }
+.hero { text-align: center; padding: 56px 0 40px; }
+.hero h1 { font-size: 44px; line-height: 1.15; margin: 0 auto 16px; max-width: 760px; letter-spacing: -.02em; }
+.hero .lead { font-size: 18px; color: var(--muted); max-width: 620px; margin: 0 auto 28px; line-height: 1.5; }
+.hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 12px; }
+.btn.big { padding: 12px 22px; font-size: 16px; border-radius: 10px; }
+.home-section { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 28px 32px; margin-top: 20px; }
+.home-section h2 { margin: 0 0 18px; font-size: 24px; }
+.steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.steps li { display: flex; flex-direction: column; gap: 6px; }
+.step-num { width: 32px; height: 32px; border-radius: 50%; background: var(--brand-soft); color: var(--brand); font-weight: 700; display: grid; place-items: center; }
+.tutor-card { background: linear-gradient(135deg, var(--brand-softer), var(--panel)); }
+.tutor-card p { max-width: 720px; line-height: 1.55; }
+.chips { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.chip { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; text-decoration: none; color: var(--text); background: #fffafc; }
+.chip:hover { border-color: var(--brand); }
+.chip span { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--brand); }
+.price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px; }
+.price-item { display: flex; flex-direction: column; gap: 4px; padding: 16px; border-radius: 12px; background: var(--brand-softer); }
+.price-item strong { font-size: 26px; color: var(--brand); }
+.model-pill { display: inline-block; margin: 4px 4px 0 0; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--panel); color: var(--text); font-size: 13px; }
+.home-footer { text-align: center; margin-top: 32px; }
+.auth-card .brand { text-decoration: none; }
+@media (max-width: 760px) {
+  .hero { padding: 32px 0 24px; }
+  .hero h1 { font-size: 30px; }
+  .steps, .chips, .price-grid { grid-template-columns: 1fr; }
+  .home-section { padding: 22px 20px; }
+}

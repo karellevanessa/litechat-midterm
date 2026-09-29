@@ -123,7 +123,7 @@ class SendTests(ChatTestCase):
 
 class SessionTests(ChatTestCase):
     def test_index_redirects_to_latest_session(self):
-        self.assertRedirects(self.client.get("/"), f"/sessions/{self.session.pk}/")
+        self.assertRedirects(self.client.get("/chat/"), f"/sessions/{self.session.pk}/")
 
     def test_new_session_uses_last_model(self):
         response = self.client.post("/sessions/new/")
@@ -153,7 +153,7 @@ class SessionTests(ChatTestCase):
 
     def test_delete_current_redirects(self):
         response = self.client.post(f"/sessions/{self.session.pk}/delete/?current={self.session.pk}")
-        self.assertEqual(response["HX-Redirect"], "/")
+        self.assertEqual(response["HX-Redirect"], "/chat/")
         self.assertFalse(ChatSession.objects.exists())
 
     def test_set_model(self):
@@ -173,7 +173,7 @@ class SessionTests(ChatTestCase):
     def test_superuser_without_account_gets_one_on_first_visit(self):
         admin = User.objects.create_superuser(email="admin@example.com", password="pw-123456")
         self.client.force_login(admin)
-        self.client.get("/")
+        self.client.get("/chat/")
         self.assertEqual(admin.billing_accounts.count(), 1)
 
 
